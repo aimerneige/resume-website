@@ -43,7 +43,7 @@ function Row({ label, value, children }: { label: string; value?: ReactNode; chi
 /** 模板缩略图（纯黑灰示意） */
 function Thumb({ id }: { id: TemplateId }) {
   const t = TEMPLATES[id].style;
-  const center = t.headerAlign === 'center';
+  const center = t.headerLayout === 'center';
   const heading = (
     <Box
       sx={{
@@ -151,13 +151,6 @@ export default function StyleDrawer({ open, onClose }: { open: boolean; onClose:
             <ToggleButton value="underline">{t('style.heading.underline')}</ToggleButton>
             <ToggleButton value="fill">{t('style.heading.fill')}</ToggleButton>
             <ToggleButton value="plain">{t('style.heading.plain')}</ToggleButton>
-          </ToggleButtonGroup>
-        </Row>
-
-        <Row label={t('style.headerAlign')}>
-          <ToggleButtonGroup fullWidth size="small" exclusive value={st.headerAlign} onChange={(_, v) => v && set('headerAlign', v)}>
-            <ToggleButton value="center">{t('style.align.center')}</ToggleButton>
-            <ToggleButton value="left">{t('style.align.left')}</ToggleButton>
           </ToggleButtonGroup>
         </Row>
 

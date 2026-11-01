@@ -89,6 +89,8 @@ export type Section = TextSection | TimelineSection | SkillsSection | CustomSect
 
 export type TemplateId = 'standard' | 'classic' | 'compact' | 'minimal';
 export type HeadingStyle = 'bar' | 'underline' | 'fill' | 'plain';
+export type HeaderLayout = 'center' | 'left' | 'avatarLeft' | 'split';
+export type ContactStyle = 'inline' | 'grid' | 'stacked';
 
 export interface StyleSettings {
   template: TemplateId;
@@ -100,7 +102,16 @@ export interface StyleSettings {
   padY: number;
   sectionGap: number;
   headingStyle: HeadingStyle;
-  headerAlign: 'center' | 'left';
+  /** 抬头版式 */
+  headerLayout: HeaderLayout;
+  /** 联系方式排列：单行（分隔符）/ 两列 / 逐行 */
+  contactStyle: ContactStyle;
+  /** 联系方式前显示字段名（如「电话：」） */
+  contactLabels: boolean;
+  /** 职位另起一行（否则与姓名同行） */
+  titleBelow: boolean;
+  /** 姓名字号 = 正文字号 × nameScale */
+  nameScale: number;
   showAvatar: boolean;
   showPageGuides: boolean;
 }

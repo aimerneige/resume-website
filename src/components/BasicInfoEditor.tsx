@@ -9,6 +9,7 @@ import { uid } from '../defaults';
 import { processAvatar } from '../utils/storage';
 import type { BasicInfo } from '../types';
 import SectionCard from './SectionCard';
+import HeaderLayoutPicker from './HeaderLayoutPicker';
 import { ui } from '../theme';
 import { useI18n, type MessageKey } from '../i18n';
 
@@ -42,6 +43,7 @@ export default function BasicInfoEditor() {
 
   return (
     <SectionCard id="basic" title={t('basic.title')} description={t('basic.desc')}>
+      <HeaderLayoutPicker />
       <Stack direction="row" spacing={2} sx={{ alignItems: "center", mb: 2.5 }}>
         <Avatar variant="rounded" src={b.avatar || undefined} sx={{ width: 60, height: 80, bgcolor: ui.tint, color: ui.muted }}>
           <PersonOutlineIcon />

@@ -35,19 +35,19 @@ export const TEMPLATES: Record<
 > = {
   standard: {
     fontKind: 'sans',
-    style: { fontSize: 14, lineHeight: 1.65, padX: 48, padY: 44, sectionGap: 24, headingStyle: 'bar', headerAlign: 'center' },
+    style: { fontSize: 14, lineHeight: 1.65, padX: 48, padY: 44, sectionGap: 24, headingStyle: 'bar', headerLayout: 'center', contactStyle: 'inline', titleBelow: false },
   },
   classic: {
     fontKind: 'serif',
-    style: { fontSize: 14, lineHeight: 1.7, padX: 56, padY: 48, sectionGap: 22, headingStyle: 'underline', headerAlign: 'left' },
+    style: { fontSize: 14, lineHeight: 1.7, padX: 56, padY: 48, sectionGap: 22, headingStyle: 'underline', headerLayout: 'left', contactStyle: 'inline', titleBelow: true },
   },
   compact: {
     fontKind: 'sans',
-    style: { fontSize: 13, lineHeight: 1.5, padX: 36, padY: 32, sectionGap: 16, headingStyle: 'fill', headerAlign: 'left' },
+    style: { fontSize: 13, lineHeight: 1.5, padX: 36, padY: 32, sectionGap: 16, headingStyle: 'fill', headerLayout: 'split', contactStyle: 'stacked', titleBelow: true },
   },
   minimal: {
     fontKind: 'sans',
-    style: { fontSize: 14, lineHeight: 1.75, padX: 64, padY: 56, sectionGap: 28, headingStyle: 'plain', headerAlign: 'center' },
+    style: { fontSize: 14, lineHeight: 1.75, padX: 64, padY: 56, sectionGap: 28, headingStyle: 'plain', headerLayout: 'center', contactStyle: 'inline', titleBelow: true },
   },
 };
 
@@ -56,7 +56,9 @@ export const defaultStyle = (locale: Locale = 'zh'): StyleSettings => ({
   fontFamily: DEFAULT_FONT_BY_LANG[locale].sans,
   showAvatar: true,
   showPageGuides: true,
-  ...(TEMPLATES.standard.style as Omit<StyleSettings, 'template' | 'fontFamily' | 'showAvatar' | 'showPageGuides'>),
+  ...(TEMPLATES.standard.style as Omit<StyleSettings, 'template' | 'fontFamily' | 'showAvatar' | 'showPageGuides' | 'contactLabels' | 'nameScale'>),
+  contactLabels: false,
+  nameScale: 2,
 });
 
 export const newTimelineItem = (patch: Partial<TimelineItem> = {}): TimelineItem => ({

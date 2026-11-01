@@ -11,45 +11,85 @@ import './resume.css';
 const dateRange = (start: string, end: string) =>
   start && end ? `${start} - ${end}` : start || end;
 
-function Header({ basic, showAvatar, align, t }: { basic: BasicInfo; showAvatar: boolean; align: 'center' | 'left'; t: TFn }) {
-  const contacts = [basic.location, basic.phone, basic.email, basic.birth, basic.wechat && `${t('resume.wechat')}${t('resume.colon')}${basic.wechat}`].filter(
-    Boolean,
-  ) as string[];
-  const links = basic.links.filter((l) => l.label || l.value);
-  const avatar = showAvatar && basic.avatar;
+interface ContactItem {
+  key: string;
+  label?: string;
+  value: string;
+  url?: string;
+}
+
+function Contact({ c, showLabel, t }: { c: ContactItem; showLabel: boolean; t: TFn }) {
+  const label = c.label && (showLabel || c.key === 'wechat' || c.key.startsWith('link:')) ? c.label : '';
   return (
-    <header className={`cv-header cv-header-${align}${avatar ? ' has-avatar' : ''}`} data-bk>
+    <li>
+      {label && (
+        <span className="cv-contact-label">
+          {label}
+          {c.value && t('resume.colon')}
+        </span>
+      )}
+      {c.url ? (
+        <a href={c.url} target="_blank" rel="noreferrer">
+          {c.value || c.url}
+        </a>
+      ) : (
+        c.value
+      )}
+    </li>
+  );
+}
+
+function Header({ basic, style, t }: { basic: BasicInfo; style: ResumeData['style']; t: TFn }) {
+  const { headerLayout: layout, contactLabels } = style;
+  const fixed: ContactItem[] = (
+    [
+      { key: 'location', label: t('resume.f.location'), value: basic.location },
+      { key: 'phone', label: t('resume.f.phone'), value: basic.phone },
+      { key: 'email', label: t('resume.f.email'), value: basic.email },
+      { key: 'birth', label: t('resume.f.birth'), value: basic.birth },
+      { key: 'wechat', label: t('resume.wechat'), value: basic.wechat },
+    ] as ContactItem[]
+  ).filter((c) => c.value);
+  const links: ContactItem[] = basic.links
+    .filter((l) => l.label || l.value)
+    .map((l) => ({ key: `link:${l.id}`, label: l.label, value: l.value, url: l.url }));
+
+  // 左右分栏时联系方式放在右侧，单行模式改为逐行
+  const contactStyle = layout === 'split' && style.contactStyle === 'inline' ? 'stacked' : style.contactStyle;
+  // 单行模式：基本信息一行、链接一行；其他模式合并排列
+  const groups = contactStyle === 'inline' ? [fixed, links] : [[...fixed, ...links]];
+  const contacts = groups
+    .filter((g) => g.length)
+    .map((g, i) => (
+      <ul key={i} className={`cv-contacts cv-contacts-${contactStyle}`}>
+        {g.map((c) => (
+          <Contact key={c.key} c={c} showLabel={contactLabels} t={t} />
+        ))}
+      </ul>
+    ));
+
+  const avatar = style.showAvatar && basic.avatar;
+  const nameBlock = (
+    <div className={`cv-name-row${style.titleBelow ? ' title-below' : ''}`}>
+      {basic.name && <h1 className="cv-name">{basic.name}</h1>}
+      {basic.title && <div className="cv-jobtitle">{basic.title}</div>}
+    </div>
+  );
+
+  return (
+    <header className={`cv-header cv-header-${layout}${avatar ? ' has-avatar' : ''}`} data-bk>
       {avatar && <img className="cv-avatar" src={basic.avatar} alt={basic.name} />}
-      <div className="cv-header-main">
-        <div className="cv-name-row">
-          {basic.name && <h1 className="cv-name">{basic.name}</h1>}
-          {basic.title && <div className="cv-jobtitle">{basic.title}</div>}
+      {layout === 'split' ? (
+        <>
+          <div className="cv-header-main">{nameBlock}</div>
+          {contacts.length > 0 && <div className="cv-header-aside">{contacts}</div>}
+        </>
+      ) : (
+        <div className="cv-header-main">
+          {nameBlock}
+          {contacts}
         </div>
-        {contacts.length > 0 && (
-          <ul className="cv-contacts">
-            {contacts.map((c, i) => (
-              <li key={i}>{c}</li>
-            ))}
-          </ul>
-        )}
-        {links.length > 0 && (
-          <ul className="cv-contacts">
-            {links.map((l) => (
-              <li key={l.id}>
-                {l.label && <span className="cv-link-label">{l.label}</span>}
-                {l.label && l.value && t('resume.colon')}
-                {l.url ? (
-                  <a href={l.url} target="_blank" rel="noreferrer">
-                    {l.value || l.url}
-                  </a>
-                ) : (
-                  l.value
-                )}
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+      )}
     </header>
   );
 }
@@ -163,11 +203,12 @@ const Resume = forwardRef<HTMLDivElement, { data: ResumeData }>(function Resume(
     '--cv-pad-x': `${style.padX}px`,
     '--cv-pad-y': `${style.padY}px`,
     '--cv-gap': `${style.sectionGap}px`,
+    '--cv-name-scale': style.nameScale,
   } as CSSProperties;
 
   return (
     <div ref={ref} className={`cv-root h-${style.headingStyle}`} style={vars}>
-      <Header basic={basic} showAvatar={style.showAvatar} align={style.headerAlign} t={t} />
+      <Header basic={basic} style={style} t={t} />
       {data.sections
         .filter((s) => s.visible)
         .map((s) => (
