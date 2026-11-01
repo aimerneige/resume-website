@@ -215,6 +215,7 @@ const en: Messages = {
   'lib.deleteBody': 'This saved résumé will be removed from your browser. This cannot be undone.',
   'lib.savedTime': 'Saved {time}',
   'lib.samples': 'Load sample data',
+  'lib.sampleIn': '{lang} sample',
   'lib.samplesHint': 'Start from a sample résumé, or from scratch.',
   'guard.title': 'You have unsaved changes',
   'guard.body': 'Continuing will replace the current résumé. Save it to “My résumés” first?',

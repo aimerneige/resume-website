@@ -215,6 +215,7 @@ const ja: Messages = {
   'lib.deleteBody': '保存済みの履歴書をブラウザから削除します。元に戻せません。',
   'lib.savedTime': '{time} に保存',
   'lib.samples': 'サンプルを読み込む',
+  'lib.sampleIn': '{lang}のサンプル',
   'lib.samplesHint': 'サンプルの履歴書から始めるか、白紙から作成します。',
   'guard.title': '未保存の変更があります',
   'guard.body': '続けると現在の内容が置き換えられます。先に「マイ履歴書」へ保存しますか？',

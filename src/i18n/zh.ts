@@ -213,6 +213,7 @@ const zh = {
   'lib.deleteBody': '这份已保存的简历会从浏览器中删除，无法恢复。',
   'lib.savedTime': '保存于 {time}',
   'lib.samples': '加载样例数据',
+  'lib.sampleIn': '{lang} 样例',
   'lib.samplesHint': '用一份示例简历作为起点，或从空白开始。',
   'guard.title': '当前简历有未保存的修改',
   'guard.body': '继续操作会替换当前内容。要先把它保存到「我的简历」吗？',

@@ -10,7 +10,6 @@ import {
   InputBase,
   ListItemIcon,
   ListItemText,
-  ListSubheader,
   Menu,
   MenuItem,
   Toolbar,
@@ -238,13 +237,15 @@ export default function TopBar({
           <ListItemText primary={t('data.newEmpty')} />
         </MenuItem>
         <Divider />
-        <ListSubheader sx={{ lineHeight: '32px' }}>{t('lib.samples')}</ListSubheader>
-        {LOCALES.map((l) => (
-          <MenuItem key={l.id} onClick={closeMore(() => actions.loadSample(l.id))}>
-            <ListItemIcon>
-              <ArticleOutlinedIcon fontSize="small" />
-            </ListItemIcon>
-            <ListItemText primary={l.label} slotProps={{ primary: { lang: l.htmlLang } }} />
+        <MenuItem onClick={closeMore(() => actions.loadSample(locale))}>
+          <ListItemIcon>
+            <ArticleOutlinedIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText primary={t('lib.samples')} />
+        </MenuItem>
+        {LOCALES.filter((l) => l.id !== locale).map((l) => (
+          <MenuItem key={l.id} dense onClick={closeMore(() => actions.loadSample(l.id))}>
+            <ListItemText inset primary={t('lib.sampleIn', { lang: l.label })} slotProps={{ primary: { color: 'text.secondary' } }} />
           </MenuItem>
         ))}
         <Divider />
