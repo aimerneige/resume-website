@@ -87,7 +87,7 @@ export default function TopBar({
       <Toolbar variant="dense" sx={{ gap: 1, minHeight: 56 }}>
         <Box
           component="img"
-          src="/favicon.svg"
+          src={`${import.meta.env.BASE_URL}favicon.svg`}
           alt=""
           sx={{ width: 26, height: 26, display: { xs: 'none', sm: 'block' } }}
         />
