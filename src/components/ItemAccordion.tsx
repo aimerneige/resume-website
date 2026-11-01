@@ -4,6 +4,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import CloseIcon from '@mui/icons-material/Close';
+import { ui } from '../theme';
 
 interface Props {
   expanded: boolean;
@@ -30,7 +31,7 @@ export default function ItemAccordion(p: Props) {
       >
         <Box sx={{ flex: 1, minWidth: 0 }}>
           <Typography variant="subtitle2" noWrap sx={{ fontWeight: 700 }}>
-            {p.title || <span style={{ color: '#9e9e9e' }}>（未填写）</span>}
+            {p.title || <span style={{ color: ui.muted }}>（未填写）</span>}
           </Typography>
           {p.subtitle && (
             <Typography variant="caption" color="text.secondary" noWrap component="div">

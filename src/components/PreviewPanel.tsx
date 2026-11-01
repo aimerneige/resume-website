@@ -6,6 +6,7 @@ import FitScreenIcon from '@mui/icons-material/FitScreen';
 import { useResume } from '../store';
 import { PAGE_H, PAGE_W, computePageBreaks } from '../utils/pagination';
 import Resume from './Resume';
+import { ui } from '../theme';
 
 export default function PreviewPanel({ resumeRef }: { resumeRef: RefObject<HTMLDivElement | null> }) {
   const { data } = useResume();
@@ -47,11 +48,11 @@ export default function PreviewPanel({ resumeRef }: { resumeRef: RefObject<HTMLD
   const pages = breaks.length + 1;
 
   return (
-    <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column', bgcolor: '#e4e4e4' }}>
+    <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column', bgcolor: ui.previewBg }}>
       <Stack
         direction="row"
        
-        sx={{ alignItems: "center", px: 2, py: 0.75, borderBottom: '1px solid', borderColor: 'divider', bgcolor: '#ececec' }}
+        sx={{ alignItems: "center", px: 2, py: 0.75, borderBottom: '1px solid', borderColor: 'divider', bgcolor: ui.previewBar }}
       >
         <Typography variant="body2" color="text.secondary" sx={{ flex: 1 }}>
           A4 预览 · 共 {pages} 页
@@ -102,7 +103,7 @@ export default function PreviewPanel({ resumeRef }: { resumeRef: RefObject<HTMLD
                     left: 0,
                     right: 0,
                     top: y,
-                    borderTop: '1px dashed #9e9e9e',
+                    borderTop: `1px dashed ${ui.primaryLight}`,
                     pointerEvents: 'none',
                   }}
                 >
@@ -113,7 +114,7 @@ export default function PreviewPanel({ resumeRef }: { resumeRef: RefObject<HTMLD
                       right: 8,
                       top: -10,
                       fontSize: 11,
-                      color: '#757575',
+                      color: ui.primary,
                       bgcolor: '#fff',
                       px: 0.75,
                     }}

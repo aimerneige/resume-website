@@ -9,6 +9,7 @@ import { uid } from '../defaults';
 import { processAvatar } from '../utils/storage';
 import type { BasicInfo } from '../types';
 import SectionCard from './SectionCard';
+import { ui } from '../theme';
 
 const FIELDS: { key: keyof Omit<BasicInfo, 'links' | 'avatar'>; label: string; placeholder?: string }[] = [
   { key: 'name', label: '姓名' },
@@ -40,7 +41,7 @@ export default function BasicInfoEditor() {
   return (
     <SectionCard id="basic" title="基本信息" description="个人信息与联系方式，留空的字段不会出现在简历上。">
       <Stack direction="row" spacing={2} sx={{ alignItems: "center", mb: 2.5 }}>
-        <Avatar variant="rounded" src={b.avatar || undefined} sx={{ width: 60, height: 80, bgcolor: '#eee', color: '#9e9e9e' }}>
+        <Avatar variant="rounded" src={b.avatar || undefined} sx={{ width: 60, height: 80, bgcolor: ui.tint, color: ui.muted }}>
           <PersonOutlineIcon />
         </Avatar>
         <Box>

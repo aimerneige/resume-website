@@ -30,7 +30,7 @@ export default function EditorPanel() {
           position: 'sticky',
           top: 0,
           zIndex: 2,
-          bgcolor: 'rgba(244,244,244,0.92)',
+          bgcolor: 'rgba(243,247,251,0.92)',
           backdropFilter: 'blur(6px)',
           borderBottom: '1px solid',
           borderColor: 'divider',

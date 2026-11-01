@@ -107,7 +107,7 @@ export default function CustomEditor({ id }: { id: string }) {
 
       <Stack spacing={1.5}>
         {s.blocks.map((b, i) => (
-          <Paper key={b.id} variant="outlined" sx={{ p: 1.5, bgcolor: '#fafafa' }}>
+          <Paper key={b.id} variant="outlined" sx={{ p: 1.5, bgcolor: '#f7fafd' }}>
             <Stack direction="row" sx={{ alignItems: "center", mb: 1 }}>
               <Typography variant="caption" color="text.secondary" sx={{ flex: 1 }}>
                 {b.kind === 'divider' ? '分隔线' : `文本块 ${i + 1}`}

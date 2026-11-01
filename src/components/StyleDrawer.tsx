@@ -17,6 +17,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { useResume } from '../store';
 import { TEMPLATES } from '../defaults';
 import type { StyleSettings, TemplateId } from '../types';
+import { ui } from '../theme';
 
 function Row({ label, value, children }: { label: string; value?: ReactNode; children: ReactNode }) {
   return (
@@ -112,8 +113,8 @@ export default function StyleDrawer({ open, onClose }: { open: boolean; onClose:
                 textAlign: 'left',
                 borderRadius: 1,
                 p: 0.75,
-                outline: st.template === id ? '2px solid #1f1f1f' : '1px solid transparent',
-                '&:hover': { bgcolor: '#f5f5f5' },
+                outline: st.template === id ? `2px solid ${ui.primary}` : '1px solid transparent',
+                '&:hover': { bgcolor: ui.tint },
               }}
             >
               <Thumb id={id} />

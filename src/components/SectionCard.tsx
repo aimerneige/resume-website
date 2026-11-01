@@ -19,6 +19,7 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import { ui } from '../theme';
 
 interface Props {
   id: string;
@@ -58,7 +59,7 @@ export default function SectionCard(p: Props) {
                 fontWeight: 700,
                 flex: 1,
                 '& input': { py: 0.25, borderBottom: '1px dashed transparent' },
-                '& input:hover, & input:focus': { borderBottomColor: '#9e9e9e' },
+                '& input:hover, & input:focus': { borderBottomColor: ui.primaryLight },
               }}
             />
             <EditOutlinedIcon fontSize="small" sx={{ color: 'text.disabled', ml: 0.5 }} />

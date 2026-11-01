@@ -223,17 +223,17 @@ export const sampleData = (): ResumeData => ({
   version: 1,
   docTitle: '后端开发工程师 - 示例',
   basic: {
-    name: '陈思远',
+    name: '张三',
     title: '后端开发工程师',
     avatar: '',
     location: '上海',
-    phone: '139 0000 0000',
-    email: 'siyuan.chen@example.com',
+    phone: '100 0000 0000',
+    email: 'zhangsan@example.com',
     birth: '1995/04',
     wechat: '',
     links: [
-      { id: uid(), label: 'GitHub', value: 'github.com/example', url: 'https://github.com/example' },
-      { id: uid(), label: '博客', value: 'blog.example.com', url: 'https://blog.example.com' },
+      { id: uid(), label: '个人主页', value: 'example.com', url: 'https://example.com' },
+      { id: uid(), label: '作品集', value: 'portfolio.example.com', url: 'https://portfolio.example.com' },
     ],
   },
   sections: [
@@ -253,7 +253,7 @@ export const sampleData = (): ResumeData => ({
       items: [
         {
           id: uid(),
-          title: '远帆科技有限公司',
+          title: 'XX 科技有限公司',
           subtitle: '高级后端工程师',
           meta: '上海',
           start: '2021/07',
@@ -263,7 +263,7 @@ export const sampleData = (): ResumeData => ({
         },
         {
           id: uid(),
-          title: '青禾网络科技有限公司',
+          title: 'YY 网络科技有限公司',
           subtitle: '后端开发工程师',
           meta: '杭州',
           start: '2019/03',
@@ -333,7 +333,7 @@ export const sampleData = (): ResumeData => ({
       items: [
         {
           id: uid(),
-          title: '同济大学',
+          title: 'XX 大学',
           subtitle: '本科',
           meta: '计算机科学与技术',
           start: '2015/09',
@@ -349,7 +349,7 @@ export const sampleData = (): ResumeData => ({
       visible: true,
       showTitle: true,
       blocks: [
-        newCustomBlock({ text: '全国大学生数学建模竞赛 · 省级一等奖', rightText: '2017', bold: true, marginTop: 4 }),
+        newCustomBlock({ text: '某全国性程序设计竞赛 · 一等奖', rightText: '2017', bold: true, marginTop: 4 }),
       ],
     },
   ],
