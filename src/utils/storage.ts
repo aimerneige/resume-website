@@ -2,8 +2,9 @@ import type { ResumeData } from '../types';
 import { defaultStyle } from '../defaults';
 import { sampleData } from '../samples';
 import type { Locale } from '../i18n';
+import { STORAGE_KEYS } from './storageKeys';
 
-const KEY = 'easycv:resume:v1';
+const KEY = STORAGE_KEYS.draft;
 
 export function normalize(raw: unknown): ResumeData | null {
   if (!raw || typeof raw !== 'object') return null;

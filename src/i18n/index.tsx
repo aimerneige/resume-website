@@ -3,6 +3,7 @@ import zh from './zh';
 import ja from './ja';
 import en from './en';
 import type { Locale, MessageKey, Messages, TFn } from './types';
+import { STORAGE_KEYS } from '../utils/storageKeys';
 
 export type { Locale, MessageKey, TFn } from './types';
 
@@ -14,7 +15,7 @@ export const LOCALES: { id: Locale; label: string; htmlLang: string }[] = [
   { id: 'en', label: 'English', htmlLang: 'en' },
 ];
 
-const KEY = 'easycv:locale';
+const KEY = STORAGE_KEYS.locale;
 
 /** 优先使用用户选择过的语言，否则按浏览器语言匹配，默认中文 */
 export function detectLocale(): Locale {

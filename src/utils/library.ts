@@ -1,5 +1,6 @@
 import type { ResumeData } from '../types';
 import { normalize } from './storage';
+import { STORAGE_KEYS } from './storageKeys';
 
 /**
  * 「我的简历」：用户手动保存的多份简历，存于浏览器 localStorage。
@@ -13,8 +14,8 @@ export interface SavedResume {
   data: ResumeData;
 }
 
-const KEY = 'easycv:library:v1';
-const CURRENT_KEY = 'easycv:current-slot';
+const KEY = STORAGE_KEYS.library;
+const CURRENT_KEY = STORAGE_KEYS.currentSlot;
 
 export function loadLibrary(): SavedResume[] {
   try {
