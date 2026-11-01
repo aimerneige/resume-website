@@ -2,12 +2,10 @@ import { forwardRef, type CSSProperties } from 'react';
 import type { BasicInfo, CustomSection, ResumeData, Section } from '../types';
 import { TONES } from '../defaults';
 import RichText, { inline } from './RichText';
+import { useEnsureFont, useFonts } from '../fonts/FontsProvider';
+import { DEFAULT_FONT_ID } from '../fonts/registry';
 import './resume.css';
 
-const FONTS = {
-  sans: '"PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", "Noto Sans CJK SC", "Source Han Sans SC", sans-serif',
-  serif: '"Songti SC", "STSong", "SimSun", "Noto Serif SC", "Noto Serif CJK SC", "Source Han Serif SC", serif',
-};
 
 const dateRange = (start: string, end: string) =>
   start && end ? `${start} - ${end}` : start || end;
@@ -150,8 +148,11 @@ function SectionBody({ section }: { section: Section }) {
 
 const Resume = forwardRef<HTMLDivElement, { data: ResumeData }>(function Resume({ data }, ref) {
   const { style, basic } = data;
+  const { hasFont, stackOf } = useFonts();
+  const fontId = hasFont(style.fontFamily) ? style.fontFamily : DEFAULT_FONT_ID;
+  useEnsureFont(fontId);
   const vars = {
-    '--cv-font': FONTS[style.fontFamily],
+    '--cv-font': stackOf(fontId),
     '--cv-fs': `${style.fontSize}px`,
     '--cv-lh': style.lineHeight,
     '--cv-pad-x': `${style.padX}px`,

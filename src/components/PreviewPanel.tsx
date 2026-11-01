@@ -39,8 +39,11 @@ export default function PreviewPanel({ resumeRef }: { resumeRef: RefObject<HTMLD
     ro.observe(el);
     const imgs = Array.from(el.querySelectorAll('img'));
     imgs.forEach((img) => img.addEventListener('load', measure));
+    // 字体分片异步加载完成后，文字宽高会变化
+    document.fonts.addEventListener('loadingdone', measure);
     return () => {
       ro.disconnect();
+      document.fonts.removeEventListener('loadingdone', measure);
       imgs.forEach((img) => img.removeEventListener('load', measure));
     };
   }, [data, scale, resumeRef]);

@@ -92,7 +92,8 @@ export type HeadingStyle = 'bar' | 'underline' | 'fill' | 'plain';
 
 export interface StyleSettings {
   template: TemplateId;
-  fontFamily: 'sans' | 'serif';
+  /** 内置字体 id，或 `local:<id>` 表示用户上传的本地字体 */
+  fontFamily: string;
   fontSize: number;
   lineHeight: number;
   padX: number;

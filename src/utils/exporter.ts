@@ -1,6 +1,7 @@
 import { toCanvas } from 'html-to-image';
 import { jsPDF } from 'jspdf';
 import { PAGE_H, PAGE_W, computePageBreaks } from './pagination';
+import { buildFontEmbedCSS, ensureGlyphsLoaded } from '../fonts/embed';
 
 const RATIO = 2.5; // 导出清晰度
 
@@ -14,10 +15,12 @@ function download(href: string, filename: string) {
 }
 
 async function snapshot(node: HTMLElement) {
-  await document.fonts?.ready;
+  await ensureGlyphsLoaded(node);
+  const fontEmbedCSS = await buildFontEmbedCSS(node);
   return toCanvas(node, {
     pixelRatio: RATIO,
     backgroundColor: '#ffffff',
+    fontEmbedCSS,
     // 预览区可能被缩放，导出时强制按原始尺寸渲染
     style: { transform: 'none', margin: '0' },
     width: node.offsetWidth,

@@ -30,8 +30,8 @@ const theme = createTheme({
   },
   shape: { borderRadius: 8 },
   typography: {
-    fontFamily:
-      'Inter, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", "Noto Sans CJK SC", system-ui, sans-serif',
+    // 只使用自托管的开源字体，不引用任何商业系统字体
+    fontFamily: '"Noto Sans SC", sans-serif',
     button: { textTransform: 'none', fontWeight: 600 },
     h6: { fontWeight: 700 },
     subtitle1: { fontWeight: 700 },

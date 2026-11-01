@@ -13,6 +13,8 @@ import type {
   TimelineSection,
 } from './types';
 
+import { DEFAULT_FONT_ID } from './fonts/registry';
+
 export const uid = () => Math.random().toString(36).slice(2, 10);
 
 export const TONES = {
@@ -52,12 +54,15 @@ export const TIMELINE_LABELS: Record<
   },
 };
 
-export const TEMPLATES: Record<TemplateId, { name: string; desc: string; style: Partial<StyleSettings> }> = {
+export const TEMPLATES: Record<
+  TemplateId,
+  { name: string; desc: string; fontKind: 'sans' | 'serif'; style: Omit<Partial<StyleSettings>, 'fontFamily'> }
+> = {
   standard: {
     name: '标准',
     desc: '居中抬头 · 竖条标题',
+    fontKind: 'sans',
     style: {
-      fontFamily: 'sans',
       fontSize: 14,
       lineHeight: 1.65,
       padX: 48,
@@ -70,8 +75,8 @@ export const TEMPLATES: Record<TemplateId, { name: string; desc: string; style: 
   classic: {
     name: '经典',
     desc: '宋体 · 下划线标题',
+    fontKind: 'serif',
     style: {
-      fontFamily: 'serif',
       fontSize: 14,
       lineHeight: 1.7,
       padX: 56,
@@ -84,8 +89,8 @@ export const TEMPLATES: Record<TemplateId, { name: string; desc: string; style: 
   compact: {
     name: '紧凑',
     desc: '小字号 · 一页放更多',
+    fontKind: 'sans',
     style: {
-      fontFamily: 'sans',
       fontSize: 13,
       lineHeight: 1.5,
       padX: 36,
@@ -98,8 +103,8 @@ export const TEMPLATES: Record<TemplateId, { name: string; desc: string; style: 
   minimal: {
     name: '极简',
     desc: '大留白 · 无装饰标题',
+    fontKind: 'sans',
     style: {
-      fontFamily: 'sans',
       fontSize: 14,
       lineHeight: 1.75,
       padX: 64,
@@ -113,9 +118,10 @@ export const TEMPLATES: Record<TemplateId, { name: string; desc: string; style: 
 
 export const defaultStyle: StyleSettings = {
   template: 'standard',
+  fontFamily: DEFAULT_FONT_ID,
   showAvatar: true,
   showPageGuides: true,
-  ...(TEMPLATES.standard.style as Omit<StyleSettings, 'template' | 'showAvatar' | 'showPageGuides'>),
+  ...(TEMPLATES.standard.style as Omit<StyleSettings, 'template' | 'fontFamily' | 'showAvatar' | 'showPageGuides'>),
 };
 
 export const newTimelineItem = (): TimelineItem => ({

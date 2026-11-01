@@ -14,6 +14,23 @@ npm run build    # 构建到 dist/
 - 完全自定义模块：逐块调整字号、粗斜体、对齐、灰度、上间距、缩进、行高，支持右侧文字和分隔线
 - 4 套模板（标准 / 经典 / 紧凑 / 极简）+ 字体、字号、行高、页边距等细节调整
 - 导出：PDF（自动在段落间分页）、浏览器打印矢量 PDF、PNG / JPG
-- 数据自动保存在浏览器本地，可导出 / 导入 JSON 备份
+- 字体：内置 7 款开源字体，可上传本地字体（TTF / OTF / WOFF / WOFF2）
+- 纯静态站点，无后台：简历数据存于 localStorage，上传的字体存于 IndexedDB，均只在当前浏览器中
+- 可导出 / 导入 JSON 备份
 
 描述类字段支持简单格式：`- ` 开头为列表，`1. ` 为编号，`**文字**` 加粗。
+
+## 字体授权
+
+站点只使用自托管的开源字体，不引用任何商业系统字体（如苹方、微软雅黑、宋体）：
+
+| 字体 | 授权 | 来源 |
+|---|---|---|
+| Noto Sans SC / Noto Serif SC（思源黑体 / 宋体） | SIL OFL 1.1 | `@fontsource/*` |
+| Noto Sans JP / Noto Serif JP | SIL OFL 1.1 | `@fontsource/*` |
+| LXGW WenKai（霞鹜文楷） | SIL OFL 1.1 | `lxgw-wenkai-webfont` |
+| Inter | SIL OFL 1.1 | `@fontsource/inter` |
+| Source Serif 4 | SIL OFL 1.1 | `@fontsource/source-serif-4` |
+
+以上字体均可免费商用。字体按 unicode-range 分片，访问者只下载实际用到的字符；构建时只保留 woff2。
+用户上传的本地字体仅在其浏览器中使用，授权由用户自行负责。

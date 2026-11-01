@@ -7,10 +7,14 @@ export function normalize(raw: unknown): ResumeData | null {
   if (!raw || typeof raw !== 'object') return null;
   const d = raw as Partial<ResumeData>;
   if (d.version !== 1 || !d.basic || !Array.isArray(d.sections)) return null;
+  const style = { ...defaultStyle, ...(d.style ?? {}) };
+  // 旧版本只区分黑体 / 宋体
+  if ((style.fontFamily as string) === 'sans') style.fontFamily = 'noto-sans-sc';
+  if ((style.fontFamily as string) === 'serif') style.fontFamily = 'noto-serif-sc';
   return {
     ...(d as ResumeData),
     docTitle: d.docTitle ?? '我的简历',
-    style: { ...defaultStyle, ...(d.style ?? {}) },
+    style,
     basic: { ...d.basic, links: d.basic.links ?? [] },
   };
 }

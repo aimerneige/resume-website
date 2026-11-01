@@ -18,6 +18,8 @@ import { useResume } from '../store';
 import { TEMPLATES } from '../defaults';
 import type { StyleSettings, TemplateId } from '../types';
 import { ui } from '../theme';
+import FontPicker from './FontPicker';
+import { DEFAULT_FONT_BY_LANG, getBuiltinFont } from '../fonts/registry';
 
 function Row({ label, value, children }: { label: string; value?: ReactNode; children: ReactNode }) {
   return (
@@ -85,7 +87,12 @@ export default function StyleDrawer({ open, onClose }: { open: boolean; onClose:
 
   const applyTemplate = (id: TemplateId) =>
     update((d) => {
-      Object.assign(d.style, TEMPLATES[id].style, { template: id });
+      // 模板只决定「无衬线 / 衬线」，具体字体沿用当前语言对应的开源字体
+      const lang = getBuiltinFont(d.style.fontFamily)?.lang ?? 'zh';
+      Object.assign(d.style, TEMPLATES[id].style, {
+        template: id,
+        fontFamily: DEFAULT_FONT_BY_LANG[lang][TEMPLATES[id].fontKind],
+      });
     });
 
   return (
@@ -133,12 +140,7 @@ export default function StyleDrawer({ open, onClose }: { open: boolean; onClose:
         </Typography>
 
         <Row label="字体">
-          <ToggleButtonGroup fullWidth size="small" exclusive value={st.fontFamily} onChange={(_, v) => v && set('fontFamily', v)}>
-            <ToggleButton value="sans">黑体（无衬线）</ToggleButton>
-            <ToggleButton value="serif" sx={{ fontFamily: 'serif' }}>
-              宋体（衬线）
-            </ToggleButton>
-          </ToggleButtonGroup>
+          <FontPicker value={st.fontFamily} onChange={(id) => set('fontFamily', id)} />
         </Row>
 
         <Row label="模块标题样式">
