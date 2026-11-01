@@ -11,7 +11,7 @@ export interface LinkItem {
 export interface BasicInfo {
   name: string;
   title: string;
-  avatar: string; // 已转为黑白的 dataURL
+  avatar: string; // 裁剪后的 dataURL，保留原始色彩
   location: string;
   phone: string;
   email: string;

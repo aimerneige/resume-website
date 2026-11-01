@@ -47,7 +47,7 @@ const en: Messages = {
   'basic.desc': 'Your name and contact details. Empty fields are left off the résumé.',
   'basic.photoUpload': 'Upload photo',
   'basic.photoChange': 'Change photo',
-  'basic.photoHint': 'Cropped to 3:4 and converted to grayscale for printing',
+  'basic.photoHint': 'Automatically cropped to 3:4; original colors are kept',
   'basic.photoError': 'Could not read the image',
   'basic.name': 'Full name',
   'basic.jobTitle': 'Target role',

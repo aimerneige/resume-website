@@ -47,7 +47,7 @@ const ja: Messages = {
   'basic.desc': '氏名と連絡先。空欄の項目は履歴書に表示されません。',
   'basic.photoUpload': '写真をアップロード',
   'basic.photoChange': '写真を変更',
-  'basic.photoHint': '3:4 に切り抜き、印刷向けに白黒へ自動変換します',
+  'basic.photoHint': '3:4 に自動で切り抜きます（カラーのまま保持）',
   'basic.photoError': '画像を読み込めません',
   'basic.name': '氏名',
   'basic.jobTitle': '希望職種',

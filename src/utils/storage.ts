@@ -40,7 +40,7 @@ export function saveData(data: ResumeData): boolean {
   }
 }
 
-/** 读取图片 → 裁成 3:4 → 转为黑白，保证打印效果 */
+/** 读取图片 → 裁成 3:4 并缩小尺寸。保留原始色彩：照片是简历中唯一的彩色部分 */
 export function processAvatar(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
     const img = new Image();
@@ -56,12 +56,6 @@ export function processAvatar(file: File): Promise<string> {
       const w = img.width * scale;
       const h = img.height * scale;
       ctx.drawImage(img, (W - w) / 2, (H - h) / 2, w, h);
-      const px = ctx.getImageData(0, 0, W, H);
-      for (let i = 0; i < px.data.length; i += 4) {
-        const y = 0.299 * px.data[i] + 0.587 * px.data[i + 1] + 0.114 * px.data[i + 2];
-        px.data[i] = px.data[i + 1] = px.data[i + 2] = y;
-      }
-      ctx.putImageData(px, 0, 0);
       URL.revokeObjectURL(url);
       resolve(canvas.toDataURL('image/jpeg', 0.9));
     };

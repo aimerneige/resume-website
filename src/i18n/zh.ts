@@ -45,7 +45,7 @@ const zh = {
   'basic.desc': '个人信息与联系方式，留空的字段不会出现在简历上。',
   'basic.photoUpload': '上传照片',
   'basic.photoChange': '更换照片',
-  'basic.photoHint': '自动裁成 3:4 并转为黑白，保证打印效果',
+  'basic.photoHint': '自动裁成 3:4，保留原始色彩',
   'basic.photoError': '无法读取图片',
   'basic.name': '姓名',
   'basic.jobTitle': '求职意向 / 职位',
