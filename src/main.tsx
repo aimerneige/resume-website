@@ -12,9 +12,6 @@ import { DocActionsProvider } from './components/DocActions';
 import '@fontsource/noto-sans-sc/400.css';
 import '@fontsource/noto-sans-sc/700.css';
 import './global.css';
-import { migrateLegacyStorage } from './utils/storageKeys';
-
-migrateLegacyStorage();
 
 function LocalizedTheme({ children }: { children: ReactNode }) {
   const { locale } = useI18n();

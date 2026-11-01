@@ -1,5 +1,5 @@
 import { localFamily } from './registry';
-import { FONT_DB, LEGACY_FONT_DB } from '../utils/storageKeys';
+import { FONT_DB } from '../utils/storageKeys';
 
 /** 用户上传的字体：保存在浏览器 IndexedDB 中，不会上传到任何服务器 */
 export interface LocalFontMeta {
@@ -18,61 +18,12 @@ const STORE = 'fonts';
 export const MAX_FONT_SIZE = 40 * 1024 * 1024;
 export const FONT_ACCEPT = '.ttf,.otf,.woff,.woff2,font/ttf,font/otf,font/woff,font/woff2';
 
-/** 新数据库首次创建时，把旧版（EasyCV）数据库中的字体搬过来，然后删除旧库 */
-function copyLegacyFonts(target: IDBDatabase): Promise<void> {
-  return new Promise((resolve) => {
-    const req = indexedDB.open(LEGACY_FONT_DB);
-    // 旧库不存在：放弃创建，并清掉这个空库
-    req.onupgradeneeded = () => req.transaction?.abort();
-    req.onerror = () => {
-      indexedDB.deleteDatabase(LEGACY_FONT_DB);
-      resolve();
-    };
-    req.onsuccess = () => {
-      const old = req.result;
-      if (!old.objectStoreNames.contains(STORE)) {
-        old.close();
-        indexedDB.deleteDatabase(LEGACY_FONT_DB);
-        return resolve();
-      }
-      const get = old.transaction(STORE, 'readonly').objectStore(STORE).getAll();
-      get.onerror = () => {
-        old.close();
-        resolve();
-      };
-      get.onsuccess = () => {
-        old.close();
-        const records = get.result as LocalFontRecord[];
-        if (!records.length) {
-          indexedDB.deleteDatabase(LEGACY_FONT_DB);
-          return resolve();
-        }
-        const t = target.transaction(STORE, 'readwrite');
-        records.forEach((r) => t.objectStore(STORE).put(r));
-        t.oncomplete = () => {
-          indexedDB.deleteDatabase(LEGACY_FONT_DB);
-          resolve();
-        };
-        t.onerror = t.onabort = () => resolve();
-      };
-    };
-  });
-}
-
 function openDb(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
     if (!('indexedDB' in window)) return reject(new Error('IndexedDB unavailable'));
     const req = indexedDB.open(DB, 1);
-    let fresh = false;
-    req.onupgradeneeded = () => {
-      fresh = true;
-      req.result.createObjectStore(STORE, { keyPath: 'id' });
-    };
-    req.onsuccess = () => {
-      const db = req.result;
-      if (!fresh) return resolve(db);
-      copyLegacyFonts(db).finally(() => resolve(db));
-    };
+    req.onupgradeneeded = () => req.result.createObjectStore(STORE, { keyPath: 'id' });
+    req.onsuccess = () => resolve(req.result);
     req.onerror = () => reject(req.error);
   });
 }

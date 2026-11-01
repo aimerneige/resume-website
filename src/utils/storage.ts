@@ -11,13 +11,6 @@ export function normalize(raw: unknown): ResumeData | null {
   const d = raw as Partial<ResumeData>;
   if (d.version !== 1 || !d.basic || !Array.isArray(d.sections)) return null;
   const style = { ...defaultStyle(), ...(d.style ?? {}) };
-  // 旧版本只区分黑体 / 宋体
-  if ((style.fontFamily as string) === 'sans') style.fontFamily = 'noto-sans-sc';
-  if ((style.fontFamily as string) === 'serif') style.fontFamily = 'noto-serif-sc';
-  // 旧版本只有「居中 / 居左」
-  const legacy = (d.style as { headerAlign?: 'center' | 'left' } | undefined)?.headerAlign;
-  if (legacy && !d.style?.headerLayout) style.headerLayout = legacy;
-  delete (style as { headerAlign?: unknown }).headerAlign;
   return {
     ...(d as ResumeData),
     docTitle: d.docTitle ?? '',
