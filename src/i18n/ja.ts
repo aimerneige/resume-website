@@ -1,7 +1,7 @@
 import type { Messages } from './types';
 
 const ja: Messages = {
-  'app.title': 'EasyCV · 履歴書メーカー',
+  'app.title': 'Resume · 履歴書メーカー',
   'app.docTitlePlaceholder': '履歴書の名前',
   'app.defaultDocTitle': 'マイ履歴書',
   'app.defaultFileName': '履歴書',

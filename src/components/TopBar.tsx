@@ -108,7 +108,7 @@ export default function TopBar({
           sx={{ width: 26, height: 26, display: { xs: 'none', md: 'block' } }}
         />
         <Typography variant="subtitle1" sx={{ fontWeight: 800, letterSpacing: 0.5, display: { xs: 'none', md: 'block' } }}>
-          EasyCV
+          Resume
         </Typography>
         <Divider orientation="vertical" flexItem sx={{ mx: 1, my: 1.5, display: { xs: 'none', md: 'block' } }} />
         <InputBase

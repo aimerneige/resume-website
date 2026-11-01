@@ -1,5 +1,5 @@
 const zh = {
-  'app.title': 'EasyCV · 简历生成器',
+  'app.title': 'Resume · 简历生成器',
   'app.docTitlePlaceholder': '简历名称',
   'app.defaultDocTitle': '我的简历',
   'app.defaultFileName': '简历',

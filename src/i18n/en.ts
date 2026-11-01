@@ -1,7 +1,7 @@
 import type { Messages } from './types';
 
 const en: Messages = {
-  'app.title': 'EasyCV · Résumé Builder',
+  'app.title': 'Resume · Résumé Builder',
   'app.docTitlePlaceholder': 'Résumé name',
   'app.defaultDocTitle': 'My Résumé',
   'app.defaultFileName': 'Resume',
