@@ -20,6 +20,7 @@ import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import { ui } from '../theme';
+import { useI18n } from '../i18n';
 
 interface Props {
   id: string;
@@ -38,6 +39,7 @@ interface Props {
 }
 
 export default function SectionCard(p: Props) {
+  const { t } = useI18n();
   const [confirm, setConfirm] = useState(false);
   const hidden = p.visible === false;
 
@@ -53,7 +55,7 @@ export default function SectionCard(p: Props) {
             <InputBase
               value={p.title}
               onChange={(e) => p.onRename!(e.target.value)}
-              placeholder="模块标题"
+              placeholder={t('section.titlePlaceholder')}
               sx={{
                 fontSize: 18,
                 fontWeight: 700,
@@ -71,28 +73,28 @@ export default function SectionCard(p: Props) {
         )}
         <Stack direction="row" spacing={0.25} sx={{ alignItems: "center", flexShrink: 0 }}>
           {p.onToggleVisible && (
-            <Tooltip title={hidden ? '在简历中显示' : '在简历中隐藏'}>
+            <Tooltip title={hidden ? t('section.show') : t('section.hide')}>
               <IconButton size="small" onClick={p.onToggleVisible}>
                 {hidden ? <VisibilityOffOutlinedIcon fontSize="small" /> : <VisibilityOutlinedIcon fontSize="small" />}
               </IconButton>
             </Tooltip>
           )}
           {p.onMoveUp && (
-            <Tooltip title="上移模块">
+            <Tooltip title={t('section.moveUp')}>
               <IconButton size="small" onClick={p.onMoveUp}>
                 <ArrowUpwardIcon fontSize="small" />
               </IconButton>
             </Tooltip>
           )}
           {p.onMoveDown && (
-            <Tooltip title="下移模块">
+            <Tooltip title={t('section.moveDown')}>
               <IconButton size="small" onClick={p.onMoveDown}>
                 <ArrowDownwardIcon fontSize="small" />
               </IconButton>
             </Tooltip>
           )}
           {p.onDelete && (
-            <Tooltip title="删除模块">
+            <Tooltip title={t('section.delete')}>
               <IconButton size="small" onClick={() => setConfirm(true)}>
                 <DeleteOutlineIcon fontSize="small" />
               </IconButton>
@@ -113,15 +115,15 @@ export default function SectionCard(p: Props) {
       {p.children}
 
       <Dialog open={confirm} onClose={() => setConfirm(false)}>
-        <DialogTitle>删除「{p.title || '未命名模块'}」？</DialogTitle>
+        <DialogTitle>{t('section.deleteTitle', { name: p.title || t('common.untitled') })}</DialogTitle>
         <DialogContent>
           <Typography variant="body2" color="text.secondary">
-            模块内的所有内容都会被删除，此操作无法撤销。若只是暂时不需要，可以点击眼睛图标隐藏。
+            {t('section.deleteBody')}
           </Typography>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setConfirm(false)} color="inherit">
-            取消
+            {t('common.cancel')}
           </Button>
           <Button
             variant="contained"
@@ -130,7 +132,7 @@ export default function SectionCard(p: Props) {
               p.onDelete!();
             }}
           >
-            删除
+            {t('common.delete')}
           </Button>
         </DialogActions>
       </Dialog>

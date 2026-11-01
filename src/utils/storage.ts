@@ -1,5 +1,7 @@
 import type { ResumeData } from '../types';
-import { defaultStyle, sampleData } from '../defaults';
+import { defaultStyle } from '../defaults';
+import { sampleData } from '../samples';
+import type { Locale } from '../i18n';
 
 const KEY = 'easycv:resume:v1';
 
@@ -7,26 +9,26 @@ export function normalize(raw: unknown): ResumeData | null {
   if (!raw || typeof raw !== 'object') return null;
   const d = raw as Partial<ResumeData>;
   if (d.version !== 1 || !d.basic || !Array.isArray(d.sections)) return null;
-  const style = { ...defaultStyle, ...(d.style ?? {}) };
+  const style = { ...defaultStyle(), ...(d.style ?? {}) };
   // 旧版本只区分黑体 / 宋体
   if ((style.fontFamily as string) === 'sans') style.fontFamily = 'noto-sans-sc';
   if ((style.fontFamily as string) === 'serif') style.fontFamily = 'noto-serif-sc';
   return {
     ...(d as ResumeData),
-    docTitle: d.docTitle ?? '我的简历',
+    docTitle: d.docTitle ?? '',
     style,
     basic: { ...d.basic, links: d.basic.links ?? [] },
   };
 }
 
-export function loadData(): ResumeData {
+export function loadData(locale: Locale): ResumeData {
   try {
     const raw = localStorage.getItem(KEY);
-    if (raw) return normalize(JSON.parse(raw)) ?? sampleData();
+    if (raw) return normalize(JSON.parse(raw)) ?? sampleData(locale);
   } catch {
     /* 忽略损坏的数据 */
   }
-  return sampleData();
+  return sampleData(locale);
 }
 
 export function saveData(data: ResumeData): boolean {
@@ -65,7 +67,7 @@ export function processAvatar(file: File): Promise<string> {
     };
     img.onerror = () => {
       URL.revokeObjectURL(url);
-      reject(new Error('无法读取图片'));
+      reject(new Error('image'));
     };
     img.src = url;
   });

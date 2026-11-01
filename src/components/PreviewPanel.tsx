@@ -7,9 +7,11 @@ import { useResume } from '../store';
 import { PAGE_H, PAGE_W, computePageBreaks } from '../utils/pagination';
 import Resume from './Resume';
 import { ui } from '../theme';
+import { useI18n } from '../i18n';
 
 export default function PreviewPanel({ resumeRef }: { resumeRef: RefObject<HTMLDivElement | null> }) {
   const { data } = useResume();
+  const { t } = useI18n();
   const box = useRef<HTMLDivElement>(null);
   const [fit, setFit] = useState(1);
   const [zoom, setZoom] = useState<number | null>(null); // null = 自适应宽度
@@ -58,9 +60,9 @@ export default function PreviewPanel({ resumeRef }: { resumeRef: RefObject<HTMLD
         sx={{ alignItems: "center", px: 2, py: 0.75, borderBottom: '1px solid', borderColor: 'divider', bgcolor: ui.previewBar }}
       >
         <Typography variant="body2" color="text.secondary" sx={{ flex: 1 }}>
-          A4 预览 · 共 {pages} 页
+          {t('preview.pages', { n: pages })}
         </Typography>
-        <Tooltip title="缩小">
+        <Tooltip title={t('preview.zoomOut')}>
           <IconButton size="small" onClick={() => setZoom(Math.max(0.3, +(scale - 0.1).toFixed(2)))}>
             <ZoomOutIcon fontSize="small" />
           </IconButton>
@@ -68,12 +70,12 @@ export default function PreviewPanel({ resumeRef }: { resumeRef: RefObject<HTMLD
         <Typography variant="body2" sx={{ width: 48, textAlign: 'center', fontVariantNumeric: 'tabular-nums' }}>
           {Math.round(scale * 100)}%
         </Typography>
-        <Tooltip title="放大">
+        <Tooltip title={t('preview.zoomIn')}>
           <IconButton size="small" onClick={() => setZoom(Math.min(2, +(scale + 0.1).toFixed(2)))}>
             <ZoomInIcon fontSize="small" />
           </IconButton>
         </Tooltip>
-        <Tooltip title="适应宽度">
+        <Tooltip title={t('preview.fit')}>
           <IconButton size="small" onClick={() => setZoom(null)} color={zoom === null ? 'primary' : 'default'}>
             <FitScreenIcon fontSize="small" />
           </IconButton>
@@ -122,7 +124,7 @@ export default function PreviewPanel({ resumeRef }: { resumeRef: RefObject<HTMLD
                       px: 0.75,
                     }}
                   >
-                    第 {i + 1} 页结束
+                    {t('preview.pageEnd', { n: i + 1 })}
                   </Typography>
                 </Box>
               ))}

@@ -3,12 +3,14 @@ import { Box, Button, Chip, Paper, Stack, Typography } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import TuneIcon from '@mui/icons-material/Tune';
 import { useResume } from '../store';
-import { SECTION_PRESETS, newCustomSection } from '../defaults';
+import { SECTION_PRESETS, createCustomSection } from '../defaults';
+import { useI18n } from '../i18n';
 import BasicInfoEditor from './BasicInfoEditor';
 import SectionEditor from './SectionEditors';
 
 export default function EditorPanel() {
   const { data, update } = useResume();
+  const { t } = useI18n();
   const scroller = useRef<HTMLDivElement>(null);
 
   const jump = (id: string) =>
@@ -39,17 +41,17 @@ export default function EditorPanel() {
         }}
       >
         <Stack direction="row" sx={{ gap: 1, overflowX: 'auto', scrollbarWidth: 'none' }}>
-          <Chip label="基本信息" size="small" onClick={() => jump('basic')} />
+          <Chip label={t('nav.basic')} size="small" onClick={() => jump('basic')} />
           {data.sections.map((s) => (
             <Chip
               key={s.id}
-              label={s.title || '未命名'}
+              label={s.title || t('common.untitled')}
               size="small"
               variant={s.visible ? 'filled' : 'outlined'}
               onClick={() => jump(s.id)}
             />
           ))}
-          <Chip icon={<AddIcon />} label="添加模块" size="small" variant="outlined" onClick={() => jump('add')} />
+          <Chip icon={<AddIcon />} label={t('nav.add')} size="small" variant="outlined" onClick={() => jump('add')} />
         </Stack>
       </Box>
 
@@ -61,19 +63,19 @@ export default function EditorPanel() {
 
         <Paper id="edit-add" variant="outlined" sx={{ p: 2.5, borderStyle: 'dashed', scrollMarginTop: 64 }}>
           <Typography variant="h6" sx={{ fontSize: 18 }}>
-            添加模块
+            {t('add.title')}
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-            选择固定模板快速添加，或使用完全自定义模块自由排版。大道至简，只放与岗位相关的内容。
+            {t('add.desc')}
           </Typography>
           <Stack direction="row" sx={{ flexWrap: "wrap", gap: 1 }}>
             {SECTION_PRESETS.map((p) => (
-              <Button key={p.label} variant="outlined" size="small" startIcon={<AddIcon />} onClick={() => add(p.create)}>
-                {p.label}
+              <Button key={p.key} variant="outlined" size="small" startIcon={<AddIcon />} onClick={() => add(() => p.create(t))}>
+                {t(`preset.${p.key}`)}
               </Button>
             ))}
-            <Button variant="contained" size="small" startIcon={<TuneIcon />} onClick={() => add(() => newCustomSection())}>
-              完全自定义模块
+            <Button variant="contained" size="small" startIcon={<TuneIcon />} onClick={() => add(() => createCustomSection(t))}>
+              {t('add.custom')}
             </Button>
           </Stack>
         </Paper>

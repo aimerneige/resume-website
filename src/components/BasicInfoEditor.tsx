@@ -10,19 +10,21 @@ import { processAvatar } from '../utils/storage';
 import type { BasicInfo } from '../types';
 import SectionCard from './SectionCard';
 import { ui } from '../theme';
+import { useI18n, type MessageKey } from '../i18n';
 
-const FIELDS: { key: keyof Omit<BasicInfo, 'links' | 'avatar'>; label: string; placeholder?: string }[] = [
-  { key: 'name', label: '姓名' },
-  { key: 'title', label: '求职意向 / 职位' },
-  { key: 'location', label: '所在城市' },
-  { key: 'phone', label: '手机号码' },
-  { key: 'email', label: '电子邮箱' },
-  { key: 'birth', label: '出生年月', placeholder: '如 1995/04' },
-  { key: 'wechat', label: '微信号' },
+const FIELDS: { key: keyof Omit<BasicInfo, 'links' | 'avatar'>; label: MessageKey; placeholder?: MessageKey }[] = [
+  { key: 'name', label: 'basic.name' },
+  { key: 'title', label: 'basic.jobTitle' },
+  { key: 'location', label: 'basic.location' },
+  { key: 'phone', label: 'basic.phone' },
+  { key: 'email', label: 'basic.email' },
+  { key: 'birth', label: 'basic.birth', placeholder: 'basic.birthPlaceholder' },
+  { key: 'wechat', label: 'basic.wechat' },
 ];
 
 export default function BasicInfoEditor() {
   const { data, update } = useResume();
+  const { t } = useI18n();
   const b = data.basic;
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -33,13 +35,13 @@ export default function BasicInfoEditor() {
       update((d) => {
         d.basic.avatar = url;
       });
-    } catch (e) {
-      alert((e as Error).message);
+    } catch {
+      alert(t('basic.photoError'));
     }
   };
 
   return (
-    <SectionCard id="basic" title="基本信息" description="个人信息与联系方式，留空的字段不会出现在简历上。">
+    <SectionCard id="basic" title={t('basic.title')} description={t('basic.desc')}>
       <Stack direction="row" spacing={2} sx={{ alignItems: "center", mb: 2.5 }}>
         <Avatar variant="rounded" src={b.avatar || undefined} sx={{ width: 60, height: 80, bgcolor: ui.tint, color: ui.muted }}>
           <PersonOutlineIcon />
@@ -47,7 +49,7 @@ export default function BasicInfoEditor() {
         <Box>
           <Stack direction="row" spacing={1}>
             <Button size="small" variant="outlined" onClick={() => fileRef.current?.click()}>
-              {b.avatar ? '更换照片' : '上传照片'}
+              {b.avatar ? t('basic.photoChange') : t('basic.photoUpload')}
             </Button>
             {b.avatar && (
               <Button
@@ -59,12 +61,12 @@ export default function BasicInfoEditor() {
                   })
                 }
               >
-                删除
+                {t('common.delete')}
               </Button>
             )}
           </Stack>
           <Typography variant="caption" color="text.secondary" sx={{ display: 'block', mt: 0.5 }}>
-            自动裁成 3:4 并转为黑白，保证打印效果
+            {t('basic.photoHint')}
           </Typography>
         </Box>
         <input
@@ -83,8 +85,8 @@ export default function BasicInfoEditor() {
         {FIELDS.map((f) => (
           <TextField
             key={f.key}
-            label={f.label}
-            placeholder={f.placeholder}
+            label={t(f.label)}
+            placeholder={f.placeholder && t(f.placeholder)}
             value={b[f.key]}
             onChange={(e) =>
               update((d) => {
@@ -96,16 +98,16 @@ export default function BasicInfoEditor() {
       </Box>
 
       <Typography variant="subtitle2" sx={{ mt: 3, mb: 0.5, fontWeight: 700 }}>
-        自定义链接 / 信息
+        {t('basic.links')}
       </Typography>
       <Typography variant="caption" color="text.secondary" component="p" sx={{ mb: 1.5 }}>
-        如 GitHub、个人网站、作品集，也可以写「政治面貌：党员」这类文字信息。
+        {t('basic.linksHint')}
       </Typography>
       <Stack spacing={1.5}>
         {b.links.map((l, i) => (
           <Stack key={l.id} direction={{ xs: 'column', sm: 'row' }} spacing={1} sx={{ alignItems: { sm: 'center' } }}>
             <TextField
-              label="名称"
+              label={t('basic.linkLabel')}
               value={l.label}
               sx={{ width: { sm: 120 }, flexShrink: 0 }}
               onChange={(e) =>
@@ -115,7 +117,7 @@ export default function BasicInfoEditor() {
               }
             />
             <TextField
-              label="显示文字"
+              label={t('basic.linkValue')}
               value={l.value}
               onChange={(e) =>
                 update((d) => {
@@ -124,7 +126,7 @@ export default function BasicInfoEditor() {
               }
             />
             <TextField
-              label="链接（可选）"
+              label={t('basic.linkUrl')}
               value={l.url}
               placeholder="https://"
               onChange={(e) =>
@@ -134,7 +136,7 @@ export default function BasicInfoEditor() {
               }
             />
             <Stack direction="row" sx={{ flexShrink: 0 }}>
-              <Tooltip title="上移">
+              <Tooltip title={t('common.moveUp')}>
                 <span>
                   <IconButton
                     size="small"
@@ -145,7 +147,7 @@ export default function BasicInfoEditor() {
                   </IconButton>
                 </span>
               </Tooltip>
-              <Tooltip title="删除">
+              <Tooltip title={t('common.delete')}>
                 <IconButton
                   size="small"
                   onClick={() =>
@@ -170,7 +172,7 @@ export default function BasicInfoEditor() {
           })
         }
       >
-        添加一项
+        {t('basic.addLink')}
       </Button>
     </SectionCard>
   );

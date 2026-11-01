@@ -1,17 +1,18 @@
-import { forwardRef, type CSSProperties } from 'react';
+import { forwardRef, useMemo, type CSSProperties } from 'react';
 import type { BasicInfo, CustomSection, ResumeData, Section } from '../types';
 import { TONES } from '../defaults';
 import RichText, { inline } from './RichText';
 import { useEnsureFont, useFonts } from '../fonts/FontsProvider';
-import { DEFAULT_FONT_ID } from '../fonts/registry';
+import { DEFAULT_FONT_ID, getBuiltinFont } from '../fonts/registry';
+import { makeT, useI18n, type TFn } from '../i18n';
 import './resume.css';
 
 
 const dateRange = (start: string, end: string) =>
   start && end ? `${start} - ${end}` : start || end;
 
-function Header({ basic, showAvatar, align }: { basic: BasicInfo; showAvatar: boolean; align: 'center' | 'left' }) {
-  const contacts = [basic.location, basic.phone, basic.email, basic.birth, basic.wechat && `微信：${basic.wechat}`].filter(
+function Header({ basic, showAvatar, align, t }: { basic: BasicInfo; showAvatar: boolean; align: 'center' | 'left'; t: TFn }) {
+  const contacts = [basic.location, basic.phone, basic.email, basic.birth, basic.wechat && `${t('resume.wechat')}${t('resume.colon')}${basic.wechat}`].filter(
     Boolean,
   ) as string[];
   const links = basic.links.filter((l) => l.label || l.value);
@@ -36,7 +37,7 @@ function Header({ basic, showAvatar, align }: { basic: BasicInfo; showAvatar: bo
             {links.map((l) => (
               <li key={l.id}>
                 {l.label && <span className="cv-link-label">{l.label}</span>}
-                {l.label && l.value && '：'}
+                {l.label && l.value && t('resume.colon')}
                 {l.url ? (
                   <a href={l.url} target="_blank" rel="noreferrer">
                     {l.value || l.url}
@@ -151,6 +152,10 @@ const Resume = forwardRef<HTMLDivElement, { data: ResumeData }>(function Resume(
   const { hasFont, stackOf } = useFonts();
   const fontId = hasFont(style.fontFamily) ? style.fontFamily : DEFAULT_FONT_ID;
   useEnsureFont(fontId);
+  // 纸面上的固定文字（如「微信」、冒号）跟随简历字体的语言，而不是界面语言
+  const { locale } = useI18n();
+  const paperLocale = getBuiltinFont(fontId)?.lang ?? locale;
+  const t = useMemo(() => makeT(paperLocale), [paperLocale]);
   const vars = {
     '--cv-font': stackOf(fontId),
     '--cv-fs': `${style.fontSize}px`,
@@ -162,7 +167,7 @@ const Resume = forwardRef<HTMLDivElement, { data: ResumeData }>(function Resume(
 
   return (
     <div ref={ref} className={`cv-root h-${style.headingStyle}`} style={vars}>
-      <Header basic={basic} showAvatar={style.showAvatar} align={style.headerAlign} />
+      <Header basic={basic} showAvatar={style.showAvatar} align={style.headerAlign} t={t} />
       {data.sections
         .filter((s) => s.visible)
         .map((s) => (

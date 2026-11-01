@@ -19,6 +19,7 @@ import { TEMPLATES } from '../defaults';
 import type { StyleSettings, TemplateId } from '../types';
 import { ui } from '../theme';
 import FontPicker from './FontPicker';
+import { useI18n, type MessageKey } from '../i18n';
 import { DEFAULT_FONT_BY_LANG, getBuiltinFont } from '../fonts/registry';
 
 function Row({ label, value, children }: { label: string; value?: ReactNode; children: ReactNode }) {
@@ -79,6 +80,7 @@ function Thumb({ id }: { id: TemplateId }) {
 
 export default function StyleDrawer({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { data, update } = useResume();
+  const { t, locale } = useI18n();
   const st = data.style;
   const set = <K extends keyof StyleSettings>(k: K, v: StyleSettings[K]) =>
     update((d) => {
@@ -88,7 +90,7 @@ export default function StyleDrawer({ open, onClose }: { open: boolean; onClose:
   const applyTemplate = (id: TemplateId) =>
     update((d) => {
       // 模板只决定「无衬线 / 衬线」，具体字体沿用当前语言对应的开源字体
-      const lang = getBuiltinFont(d.style.fontFamily)?.lang ?? 'zh';
+      const lang = getBuiltinFont(d.style.fontFamily)?.lang ?? locale;
       Object.assign(d.style, TEMPLATES[id].style, {
         template: id,
         fontFamily: DEFAULT_FONT_BY_LANG[lang][TEMPLATES[id].fontKind],
@@ -99,7 +101,7 @@ export default function StyleDrawer({ open, onClose }: { open: boolean; onClose:
     <Drawer anchor="right" open={open} onClose={onClose} slotProps={{ paper: { sx: { width: { xs: '100%', sm: 380 } } } }}>
       <Stack direction="row" sx={{ alignItems: "center", px: 2.5, py: 1.5 }}>
         <Typography variant="h6" sx={{ flex: 1 }}>
-          简历样式
+          {t('style.title')}
         </Typography>
         <IconButton onClick={onClose}>
           <CloseIcon />
@@ -108,7 +110,7 @@ export default function StyleDrawer({ open, onClose }: { open: boolean; onClose:
       <Divider />
       <Box sx={{ p: 2.5, overflowY: 'auto' }}>
         <Typography variant="subtitle2" sx={{ mb: 1 }}>
-          模板
+          {t('style.templates')}
         </Typography>
         <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 1.25, mb: 3 }}>
           {(Object.keys(TEMPLATES) as TemplateId[]).map((id) => (
@@ -126,63 +128,63 @@ export default function StyleDrawer({ open, onClose }: { open: boolean; onClose:
             >
               <Thumb id={id} />
               <Typography variant="caption" sx={{ display: 'block', fontWeight: 700, mt: 0.5 }}>
-                {TEMPLATES[id].name}
+                {t(`template.${id}.name` as MessageKey)}
               </Typography>
               <Typography variant="caption" color="text.secondary" sx={{ display: 'block', lineHeight: 1.3, fontSize: 10 }}>
-                {TEMPLATES[id].desc}
+                {t(`template.${id}.desc` as MessageKey)}
               </Typography>
             </ButtonBase>
           ))}
         </Box>
 
         <Typography variant="subtitle2" sx={{ mb: 1.5 }}>
-          细节调整
+          {t('style.details')}
         </Typography>
 
-        <Row label="字体">
+        <Row label={t('style.font')}>
           <FontPicker value={st.fontFamily} onChange={(id) => set('fontFamily', id)} />
         </Row>
 
-        <Row label="模块标题样式">
+        <Row label={t('style.heading')}>
           <ToggleButtonGroup fullWidth size="small" exclusive value={st.headingStyle} onChange={(_, v) => v && set('headingStyle', v)}>
-            <ToggleButton value="bar">竖条</ToggleButton>
-            <ToggleButton value="underline">下划线</ToggleButton>
-            <ToggleButton value="fill">灰底</ToggleButton>
-            <ToggleButton value="plain">无</ToggleButton>
+            <ToggleButton value="bar">{t('style.heading.bar')}</ToggleButton>
+            <ToggleButton value="underline">{t('style.heading.underline')}</ToggleButton>
+            <ToggleButton value="fill">{t('style.heading.fill')}</ToggleButton>
+            <ToggleButton value="plain">{t('style.heading.plain')}</ToggleButton>
           </ToggleButtonGroup>
         </Row>
 
-        <Row label="抬头对齐">
+        <Row label={t('style.headerAlign')}>
           <ToggleButtonGroup fullWidth size="small" exclusive value={st.headerAlign} onChange={(_, v) => v && set('headerAlign', v)}>
-            <ToggleButton value="center">居中</ToggleButton>
-            <ToggleButton value="left">居左</ToggleButton>
+            <ToggleButton value="center">{t('style.align.center')}</ToggleButton>
+            <ToggleButton value="left">{t('style.align.left')}</ToggleButton>
           </ToggleButtonGroup>
         </Row>
 
-        <Row label="正文字号" value={`${st.fontSize}px`}>
+        <Row label={t('style.fontSize')} value={`${st.fontSize}px`}>
           <Slider size="small" min={11} max={17} step={0.5} value={st.fontSize} onChange={(_, v) => set('fontSize', v as number)} />
         </Row>
-        <Row label="行高" value={`${st.lineHeight.toFixed(2)} 倍`}>
+        <Row label={t('style.lineHeight')} value={t('style.lineHeightValue', { v: st.lineHeight.toFixed(2) })}>
           <Slider size="small" min={1.2} max={2.2} step={0.05} value={st.lineHeight} onChange={(_, v) => set('lineHeight', v as number)} />
         </Row>
-        <Row label="模块间距" value={`${st.sectionGap}px`}>
+        <Row label={t('style.sectionGap')} value={`${st.sectionGap}px`}>
           <Slider size="small" min={8} max={48} value={st.sectionGap} onChange={(_, v) => set('sectionGap', v as number)} />
         </Row>
-        <Row label="左右页边距" value={`${st.padX}px`}>
+        <Row label={t('style.padX')} value={`${st.padX}px`}>
           <Slider size="small" min={20} max={96} step={2} value={st.padX} onChange={(_, v) => set('padX', v as number)} />
         </Row>
-        <Row label="上下页边距" value={`${st.padY}px`}>
+        <Row label={t('style.padY')} value={`${st.padY}px`}>
           <Slider size="small" min={20} max={96} step={2} value={st.padY} onChange={(_, v) => set('padY', v as number)} />
         </Row>
 
         <Divider sx={{ my: 1 }} />
         <FormControlLabel
           control={<Switch checked={st.showAvatar} onChange={(e) => set('showAvatar', e.target.checked)} />}
-          label="显示照片"
+          label={t('style.showAvatar')}
         />
         <FormControlLabel
           control={<Switch checked={st.showPageGuides} onChange={(e) => set('showPageGuides', e.target.checked)} />}
-          label="预览中显示分页线"
+          label={t('style.showGuides')}
         />
       </Box>
     </Drawer>

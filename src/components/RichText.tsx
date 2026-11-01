@@ -2,14 +2,14 @@ import { Fragment, type ReactNode } from 'react';
 
 /**
  * 轻量文本格式：
- *  - 以 "- " / "* " / "• " 开头的行是无序列表
- *  - 以 "1. " / "1、" 开头的行是有序列表
+ *  - 以 "- " / "* " / "• " / "・" 开头的行是无序列表
+ *  - 以 "1. " / "1、" / "1．" / "1)" 开头的行是有序列表
  *  - **文字** 加粗
  */
 type Block = { type: 'p'; text: string } | { type: 'ul' | 'ol'; items: string[] };
 
-const UL = /^\s*[-*•]\s+/;
-const OL = /^\s*\d+[.、]\s*/;
+const UL = /^\s*(?:[-*•]\s+|・\s*)/;
+const OL = /^\s*[0-9０-９]+(?:[.)]\s+|[、．）]\s*)/;
 
 function parse(text: string): Block[] {
   const blocks: Block[] = [];

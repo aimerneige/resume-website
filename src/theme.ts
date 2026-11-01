@@ -1,4 +1,6 @@
-import { createTheme } from '@mui/material/styles';
+import { createTheme, type ThemeOptions } from '@mui/material/styles';
+import { enUS, jaJP, zhCN } from '@mui/material/locale';
+import type { Locale } from './i18n';
 
 /**
  * 编辑器界面主题：低饱和的淡蓝色调。
@@ -17,7 +19,16 @@ export const ui = {
   muted: '#8a9db3',
 } as const;
 
-const theme = createTheme({
+/** 界面字体：均为自托管的开源字体，不引用任何商业系统字体 */
+export const UI_FONT: Record<Locale, { stack: string; fontId: string }> = {
+  zh: { stack: '"Noto Sans SC", sans-serif', fontId: 'noto-sans-sc' },
+  ja: { stack: '"Noto Sans JP", "Noto Sans SC", sans-serif', fontId: 'noto-sans-jp' },
+  en: { stack: '"Inter", "Noto Sans SC", sans-serif', fontId: 'inter' },
+};
+
+const MUI_LOCALE = { zh: zhCN, ja: jaJP, en: enUS };
+
+const options = (locale: Locale): ThemeOptions => ({
   palette: {
     mode: 'light',
     primary: { main: ui.primary, light: ui.primaryLight, dark: ui.primaryDark, contrastText: '#fff' },
@@ -30,8 +41,7 @@ const theme = createTheme({
   },
   shape: { borderRadius: 8 },
   typography: {
-    // 只使用自托管的开源字体，不引用任何商业系统字体
-    fontFamily: '"Noto Sans SC", sans-serif',
+    fontFamily: UI_FONT[locale].stack,
     button: { textTransform: 'none', fontWeight: 600 },
     h6: { fontWeight: 700 },
     subtitle1: { fontWeight: 700 },
@@ -85,4 +95,4 @@ const theme = createTheme({
   },
 });
 
-export default theme;
+export const makeTheme = (locale: Locale) => createTheme(options(locale), MUI_LOCALE[locale]);

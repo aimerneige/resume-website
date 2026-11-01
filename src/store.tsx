@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useRef, useState, ty
 import { produce, type Draft } from 'immer';
 import type { ResumeData, Section } from './types';
 import { loadData, saveData } from './utils/storage';
+import { detectLocale } from './i18n';
 
 type Updater = (fn: (d: Draft<ResumeData>) => void) => void;
 
@@ -15,7 +16,7 @@ interface Ctx {
 const ResumeCtx = createContext<Ctx | null>(null);
 
 export function ResumeProvider({ children }: { children: ReactNode }) {
-  const [data, setData] = useState<ResumeData>(loadData);
+  const [data, setData] = useState<ResumeData>(() => loadData(detectLocale()));
   const [savedAt, setSavedAt] = useState<Date | null>(null);
   const timer = useRef<number | undefined>(undefined);
 

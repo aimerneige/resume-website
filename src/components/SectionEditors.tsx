@@ -2,35 +2,36 @@ import { useState } from 'react';
 import { Box, Button, FormControlLabel, Stack, Switch, TextField, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import { useResume, useSection, move } from '../store';
-import { TIMELINE_LABELS, newSkillItem, newTimelineItem } from '../defaults';
+import { timelineLabel, newSkillItem, newTimelineItem } from '../defaults';
+import { useI18n, type MessageKey } from '../i18n';
 import type { Section, SkillsSection, TextSection, TimelineSection } from '../types';
 import SectionCard from './SectionCard';
 import ItemAccordion from './ItemAccordion';
 import CustomEditor from './CustomEditor';
 
-export const FORMAT_HINT = '每行一段；以「- 」开头为列表，「1. 」为编号，**文字** 加粗';
-
-function ContentField({ value, onChange, label = '描述', rows = 4 }: { value: string; onChange: (v: string) => void; label?: string; rows?: number }) {
+function ContentField({ value, onChange, label, rows = 4 }: { value: string; onChange: (v: string) => void; label?: string; rows?: number }) {
+  const { t } = useI18n();
   return (
     <TextField
-      label={label}
+      label={label ?? t('field.description')}
       multiline
       minRows={rows}
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      helperText={FORMAT_HINT}
+      helperText={t('field.formatHint')}
     />
   );
 }
 
 function ColumnSwitch({ value, onChange }: { value: 1 | 2; onChange: (v: 1 | 2) => void }) {
+  const { t } = useI18n();
   return (
     <ToggleButtonGroup size="small" exclusive value={value} onChange={(_, v) => v && onChange(v)}>
       <ToggleButton value={1} sx={{ px: 1.5, py: 0.25 }}>
-        单栏
+        {t('section.oneColumn')}
       </ToggleButton>
       <ToggleButton value={2} sx={{ px: 1.5, py: 0.25 }}>
-        双栏
+        {t('section.twoColumns')}
       </ToggleButton>
     </ToggleButtonGroup>
   );
@@ -43,10 +44,11 @@ function useExpanded(initial?: string) {
 }
 
 function TextEditor({ id }: { id: string }) {
+  const { t } = useI18n();
   const [s, patch] = useSection<TextSection>(id);
   return (
     <ContentField
-      label="内容"
+      label={t('field.content')}
       rows={4}
       value={s.content}
       onChange={(v) =>
@@ -60,7 +62,8 @@ function TextEditor({ id }: { id: string }) {
 
 function TimelineEditor({ id }: { id: string }) {
   const [s, patch] = useSection<TimelineSection>(id);
-  const L = TIMELINE_LABELS[s.kind];
+  const { t } = useI18n();
+  const L = (f: 'title' | 'subtitle' | 'meta' | 'add') => timelineLabel(t, s.kind, f);
   const [open, toggle, setOpen] = useExpanded(s.items.length === 1 && !s.items[0].title ? s.items[0].id : undefined);
 
   return (
@@ -84,7 +87,7 @@ function TimelineEditor({ id }: { id: string }) {
             {(['title', 'subtitle', 'meta'] as const).map((k) => (
               <TextField
                 key={k}
-                label={L[k]}
+                label={L(k)}
                 value={it[k]}
                 onChange={(e) =>
                   patch((x) => {
@@ -95,8 +98,8 @@ function TimelineEditor({ id }: { id: string }) {
             ))}
             <Stack direction="row" spacing={1}>
               <TextField
-                label="开始"
-                placeholder="2020/09"
+                label={t('field.start')}
+                placeholder={t('field.startPlaceholder')}
                 value={it.start}
                 onChange={(e) =>
                   patch((x) => {
@@ -105,8 +108,8 @@ function TimelineEditor({ id }: { id: string }) {
                 }
               />
               <TextField
-                label="结束"
-                placeholder="至今"
+                label={t('field.end')}
+                placeholder={t('field.endPlaceholder')}
                 value={it.end}
                 onChange={(e) =>
                   patch((x) => {
@@ -139,13 +142,14 @@ function TimelineEditor({ id }: { id: string }) {
           setOpen(item.id);
         }}
       >
-        {L.add}
+        {L('add')}
       </Button>
     </>
   );
 }
 
 function SkillsEditor({ id }: { id: string }) {
+  const { t } = useI18n();
   const [s, patch] = useSection<SkillsSection>(id);
   const [open, toggle, setOpen] = useExpanded();
   return (
@@ -167,7 +171,7 @@ function SkillsEditor({ id }: { id: string }) {
         >
           <Stack spacing={2}>
             <TextField
-              label={s.tagMode ? '技能标签' : '技能名称'}
+              label={s.tagMode ? t('skills.tag') : t('skills.name')}
               value={it.name}
               onChange={(e) =>
                 patch((x) => {
@@ -177,7 +181,7 @@ function SkillsEditor({ id }: { id: string }) {
             />
             {!s.tagMode && (
               <ContentField
-                label="技能描述"
+                label={t('skills.desc')}
                 rows={3}
                 value={it.content}
                 onChange={(v) =>
@@ -201,20 +205,16 @@ function SkillsEditor({ id }: { id: string }) {
           setOpen(item.id);
         }}
       >
-        添加专业技能
+        {t('skills.add')}
       </Button>
     </>
   );
 }
 
-const DESCRIPTIONS: Record<string, string> = {
-  text: '一段简短的文字，支持列表与加粗。',
-  skills: '不要只罗列名词，写清楚掌握程度和应用场景。标签模式只显示技能名称。',
-  custom: '完全自定义的内容：每个文本块都可以单独调整字号、对齐、灰度、缩进和间距，右侧文字会贴右对齐（适合写日期）。',
-};
 
 export default function SectionEditor({ section, index, count }: { section: Section; index: number; count: number }) {
   const { update } = useResume();
+  const { t } = useI18n();
   const patch = (fn: (s: Section) => void) =>
     update((d) => {
       const s = d.sections.find((x) => x.id === section.id);
@@ -257,7 +257,7 @@ export default function SectionEditor({ section, index, count }: { section: Sect
               }
             />
           }
-          label="标签展示"
+          label={t('section.tagMode')}
           slotProps={{ typography: { variant: 'body2' } }}
         />
       </>
@@ -286,7 +286,9 @@ export default function SectionEditor({ section, index, count }: { section: Sect
         })
       }
       toolbar={toolbar}
-      description={section.type === 'timeline' ? TIMELINE_LABELS[section.kind].hint : DESCRIPTIONS[section.type]}
+      description={
+        section.type === 'timeline' ? timelineLabel(t, section.kind, 'hint') : t(`section.desc.${section.type}` as MessageKey)
+      }
     >
       {section.type === 'text' && <TextEditor id={section.id} />}
       {section.type === 'timeline' && <TimelineEditor id={section.id} />}

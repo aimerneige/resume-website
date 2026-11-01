@@ -31,7 +31,8 @@ import AddIcon from '@mui/icons-material/Add';
 import TitleIcon from '@mui/icons-material/Title';
 import HorizontalRuleIcon from '@mui/icons-material/HorizontalRule';
 import { useSection, move } from '../store';
-import { TONES, TONE_LABELS, newCustomBlock, uid } from '../defaults';
+import { TONES, newCustomBlock, uid } from '../defaults';
+import { useI18n } from '../i18n';
 import type { Align, CustomBlock, CustomSection, Tone } from '../types';
 
 function NumSlider(p: {
@@ -81,6 +82,7 @@ function IconTip({ title, children, onClick, disabled }: { title: string; childr
 
 export default function CustomEditor({ id }: { id: string }) {
   const [s, patch] = useSection<CustomSection>(id);
+  const { t } = useI18n();
   const set = (i: number, fn: (b: CustomBlock) => void) =>
     patch((x) => {
       fn(x.blocks[i]);
@@ -101,7 +103,7 @@ export default function CustomEditor({ id }: { id: string }) {
             }
           />
         }
-        label="在简历中显示模块标题"
+        label={t('custom.showTitle')}
         slotProps={{ typography: { variant: 'body2' } }}
       />
 
@@ -110,20 +112,20 @@ export default function CustomEditor({ id }: { id: string }) {
           <Paper key={b.id} variant="outlined" sx={{ p: 1.5, bgcolor: '#f7fafd' }}>
             <Stack direction="row" sx={{ alignItems: "center", mb: 1 }}>
               <Typography variant="caption" color="text.secondary" sx={{ flex: 1 }}>
-                {b.kind === 'divider' ? '分隔线' : `文本块 ${i + 1}`}
+                {b.kind === 'divider' ? t('custom.divider') : t('custom.block', { n: i + 1 })}
               </Typography>
-              <IconTip title="上移" disabled={i === 0} onClick={() => patch((x) => move(x.blocks, i, i - 1))}>
+              <IconTip title={t('common.moveUp')} disabled={i === 0} onClick={() => patch((x) => move(x.blocks, i, i - 1))}>
                 <KeyboardArrowUpIcon fontSize="small" />
               </IconTip>
               <IconTip
-                title="下移"
+                title={t('common.moveDown')}
                 disabled={i === s.blocks.length - 1}
                 onClick={() => patch((x) => move(x.blocks, i, i + 1))}
               >
                 <KeyboardArrowDownIcon fontSize="small" />
               </IconTip>
               <IconTip
-                title="复制"
+                title={t('common.duplicate')}
                 onClick={() =>
                   patch((x) => {
                     x.blocks.splice(i + 1, 0, { ...x.blocks[i], id: uid() });
@@ -133,7 +135,7 @@ export default function CustomEditor({ id }: { id: string }) {
                 <ContentCopyIcon sx={{ fontSize: 16 }} />
               </IconTip>
               <IconTip
-                title="删除"
+                title={t('common.delete')}
                 onClick={() =>
                   patch((x) => {
                     x.blocks.splice(i, 1);
@@ -150,13 +152,13 @@ export default function CustomEditor({ id }: { id: string }) {
                   <TextField
                     multiline
                     minRows={1}
-                    placeholder="输入文字，支持 **加粗**"
+                    placeholder={t('custom.textPlaceholder')}
                     value={b.text}
                     onChange={(e) => set(i, (x) => void (x.text = e.target.value))}
                     sx={{ bgcolor: '#fff' }}
                   />
                   <TextField
-                    placeholder="右侧文字（可选）"
+                    placeholder={t('custom.rightPlaceholder')}
                     value={b.rightText}
                     onChange={(e) => set(i, (x) => void (x.rightText = e.target.value))}
                     sx={{ width: { sm: 160 }, flexShrink: 0, bgcolor: '#fff' }}
@@ -175,13 +177,13 @@ export default function CustomEditor({ id }: { id: string }) {
                       })
                     }
                   >
-                    <ToggleButton value="b" aria-label="加粗">
+                    <ToggleButton value="b" aria-label={t('custom.bold')}>
                       <FormatBoldIcon fontSize="small" />
                     </ToggleButton>
-                    <ToggleButton value="i" aria-label="斜体">
+                    <ToggleButton value="i" aria-label={t('custom.italic')}>
                       <FormatItalicIcon fontSize="small" />
                     </ToggleButton>
-                    <ToggleButton value="u" aria-label="下划线">
+                    <ToggleButton value="u" aria-label={t('custom.underline')}>
                       <FormatUnderlinedIcon fontSize="small" />
                     </ToggleButton>
                   </ToggleButtonGroup>
@@ -191,13 +193,13 @@ export default function CustomEditor({ id }: { id: string }) {
                     value={b.align}
                     onChange={(_, v: Align | null) => v && set(i, (x) => void (x.align = v))}
                   >
-                    <ToggleButton value="left" aria-label="左对齐">
+                    <ToggleButton value="left" aria-label={t('custom.alignLeft')}>
                       <FormatAlignLeftIcon fontSize="small" />
                     </ToggleButton>
-                    <ToggleButton value="center" aria-label="居中">
+                    <ToggleButton value="center" aria-label={t('custom.alignCenter')}>
                       <FormatAlignCenterIcon fontSize="small" />
                     </ToggleButton>
-                    <ToggleButton value="right" aria-label="右对齐">
+                    <ToggleButton value="right" aria-label={t('custom.alignRight')}>
                       <FormatAlignRightIcon fontSize="small" />
                     </ToggleButton>
                   </ToggleButtonGroup>
@@ -205,7 +207,7 @@ export default function CustomEditor({ id }: { id: string }) {
                 </Stack>
                 {b.rightText && b.align !== 'left' && (
                   <Typography variant="caption" color="text.secondary" component="p" sx={{ mt: 0.5 }}>
-                    填写了右侧文字时，该行固定为左右两端对齐。
+                    {t('custom.rightTextNote')}
                   </Typography>
                 )}
 
@@ -217,16 +219,16 @@ export default function CustomEditor({ id }: { id: string }) {
                     mt: 1,
                   }}
                 >
-                  <NumSlider label="字号" value={b.fontSize} min={10} max={36} onChange={(v) => set(i, (x) => void (x.fontSize = v))} />
-                  <NumSlider label="上间距" value={b.marginTop} min={0} max={60} onChange={(v) => set(i, (x) => void (x.marginTop = v))} />
-                  <NumSlider label="左缩进" value={b.indent} min={0} max={200} step={2} onChange={(v) => set(i, (x) => void (x.indent = v))} />
+                  <NumSlider label={t('custom.fontSize')} value={b.fontSize} min={10} max={36} onChange={(v) => set(i, (x) => void (x.fontSize = v))} />
+                  <NumSlider label={t('custom.marginTop')} value={b.marginTop} min={0} max={60} onChange={(v) => set(i, (x) => void (x.marginTop = v))} />
+                  <NumSlider label={t('custom.indent')} value={b.indent} min={0} max={200} step={2} onChange={(v) => set(i, (x) => void (x.indent = v))} />
                   <NumSlider
-                    label="行高"
+                    label={t('custom.lineHeight')}
                     value={b.lineHeight}
                     min={1}
                     max={2.5}
                     step={0.05}
-                    unit="倍"
+                    unit={t('custom.times')}
                     onChange={(v) => set(i, (x) => void (x.lineHeight = v))}
                   />
                 </Box>
@@ -235,7 +237,7 @@ export default function CustomEditor({ id }: { id: string }) {
 
             {b.kind === 'divider' && (
               <Box sx={{ display: 'grid', gridTemplateColumns: '1fr auto', columnGap: 2, alignItems: 'center' }}>
-                <NumSlider label="上间距" value={b.marginTop} min={0} max={60} onChange={(v) => set(i, (x) => void (x.marginTop = v))} />
+                <NumSlider label={t('custom.marginTop')} value={b.marginTop} min={0} max={60} onChange={(v) => set(i, (x) => void (x.marginTop = v))} />
                 <ToneSelect value={b.tone} onChange={(v) => set(i, (x) => void (x.tone = v))} />
               </Box>
             )}
@@ -253,17 +255,17 @@ export default function CustomEditor({ id }: { id: string }) {
             })
           }
         >
-          文本
+          {t('custom.addText')}
         </Button>
         <Button
           startIcon={<TitleIcon />}
           onClick={() =>
             patch((x) => {
-              x.blocks.push(newCustomBlock({ text: '小标题', fontSize: 15, bold: true, marginTop: 12 }));
+              x.blocks.push(newCustomBlock({ text: t('custom.headingDefault'), fontSize: 15, bold: true, marginTop: 12 }));
             })
           }
         >
-          小标题
+          {t('custom.addHeading')}
         </Button>
         <Button
           startIcon={<HorizontalRuleIcon />}
@@ -273,7 +275,7 @@ export default function CustomEditor({ id }: { id: string }) {
             })
           }
         >
-          分隔线
+          {t('custom.addDivider')}
         </Button>
       </Stack>
     </>
@@ -281,6 +283,7 @@ export default function CustomEditor({ id }: { id: string }) {
 }
 
 function ToneSelect({ value, onChange }: { value: Tone; onChange: (v: Tone) => void }) {
+  const { t } = useI18n();
   return (
     <Select
       size="small"
@@ -288,10 +291,10 @@ function ToneSelect({ value, onChange }: { value: Tone; onChange: (v: Tone) => v
       onChange={(e) => onChange(e.target.value as Tone)}
       sx={{ minWidth: 96, bgcolor: '#fff', '& .MuiSelect-select': { py: 0.75, display: 'flex', alignItems: 'center', gap: 1 } }}
     >
-      {(Object.keys(TONES) as Tone[]).map((t) => (
-        <MenuItem key={t} value={t} sx={{ gap: 1 }}>
-          <Box sx={{ width: 12, height: 12, borderRadius: '2px', bgcolor: TONES[t], flexShrink: 0 }} />
-          {TONE_LABELS[t]}
+      {(Object.keys(TONES) as Tone[]).map((tone) => (
+        <MenuItem key={tone} value={tone} sx={{ gap: 1 }}>
+          <Box sx={{ width: 12, height: 12, borderRadius: '2px', bgcolor: TONES[tone], flexShrink: 0 }} />
+          {t(`tone.${tone}`)}
         </MenuItem>
       ))}
     </Select>

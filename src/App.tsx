@@ -9,9 +9,11 @@ import EditorPanel from './components/EditorPanel';
 import PreviewPanel from './components/PreviewPanel';
 import StyleDrawer from './components/StyleDrawer';
 import Resume from './components/Resume';
+import { useI18n } from './i18n';
 
 export default function App() {
   const { data } = useResume();
+  const { t } = useI18n();
   const resumeRef = useRef<HTMLDivElement>(null);
   const [styleOpen, setStyleOpen] = useState(false);
   const [mobileView, setMobileView] = useState<'edit' | 'preview'>('edit');
@@ -60,7 +62,7 @@ export default function App() {
           sx={{ position: 'fixed', right: 20, bottom: 20 }}
         >
           {mobileView === 'edit' ? <VisibilityOutlinedIcon sx={{ mr: 1 }} /> : <EditOutlinedIcon sx={{ mr: 1 }} />}
-          {mobileView === 'edit' ? '预览' : '编辑'}
+          {mobileView === 'edit' ? t('app.preview') : t('app.edit')}
         </Fab>
       )}
 

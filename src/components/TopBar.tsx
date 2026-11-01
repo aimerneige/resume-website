@@ -31,7 +31,11 @@ import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import NoteAddOutlinedIcon from '@mui/icons-material/NoteAddOutlined';
 import { useResume } from '../store';
-import { emptyData, sampleData } from '../defaults';
+import { emptyData } from '../defaults';
+import { sampleData } from '../samples';
+import { LOCALES, useI18n } from '../i18n';
+import TranslateIcon from '@mui/icons-material/Translate';
+import CheckIcon from '@mui/icons-material/Check';
 import { normalize } from '../utils/storage';
 
 const exporter = () => import('../utils/exporter');
@@ -46,6 +50,8 @@ export default function TopBar({
   onOpenStyle: () => void;
 }) {
   const { data, update, replace, savedAt } = useResume();
+  const { t, locale, setLocale } = useI18n();
+  const [langEl, setLangEl] = useState<HTMLElement | null>(null);
   const [exportEl, setExportEl] = useState<HTMLElement | null>(null);
   const [moreEl, setMoreEl] = useState<HTMLElement | null>(null);
   const [busy, setBusy] = useState(false);
@@ -53,7 +59,7 @@ export default function TopBar({
   const [confirm, setConfirm] = useState<null | 'sample' | 'empty'>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
-  const filename = `${data.basic.name || '简历'}${data.basic.title ? '-' + data.basic.title : ''}`;
+  const filename = `${data.basic.name || t('app.defaultFileName')}${data.basic.title ? '-' + data.basic.title : ''}`;
 
   const run = async (fn: (node: HTMLElement) => Promise<void> | void) => {
     setExportEl(null);
@@ -64,7 +70,7 @@ export default function TopBar({
       await fn(node);
     } catch (e) {
       console.error(e);
-      setToast('导出失败：' + (e as Error).message);
+      setToast(t('export.failed', { msg: (e as Error).message }));
     } finally {
       setBusy(false);
     }
@@ -74,11 +80,11 @@ export default function TopBar({
     if (!file) return;
     try {
       const d = normalize(JSON.parse(await file.text()));
-      if (!d) throw new Error('文件格式不正确');
+      if (!d) throw new Error(t('data.badFormat'));
       replace(d);
-      setToast('已导入简历数据');
+      setToast(t('data.imported'));
     } catch (e) {
-      setToast('导入失败：' + (e as Error).message);
+      setToast(t('data.importFailed', { msg: (e as Error).message }));
     }
   };
 
@@ -102,21 +108,26 @@ export default function TopBar({
               d.docTitle = e.target.value;
             })
           }
-          placeholder="简历名称"
+          placeholder={t('app.docTitlePlaceholder')}
           sx={{ fontWeight: 600, flex: '0 1 260px', minWidth: 80, '& input': { textOverflow: 'ellipsis' } }}
         />
         <Box sx={{ flex: 1 }} />
         {savedAt && (
           <Typography variant="caption" color="text.secondary" sx={{ display: { xs: 'none', md: 'block' }, mr: 1 }}>
-            已自动保存 {pad(savedAt.getHours())}:{pad(savedAt.getMinutes())}:{pad(savedAt.getSeconds())}
+            {t('app.savedAt', { time: `${pad(savedAt.getHours())}:${pad(savedAt.getMinutes())}:${pad(savedAt.getSeconds())}` })}
           </Typography>
         )}
+        <Tooltip title={t('app.language')}>
+          <IconButton size="small" onClick={(e) => setLangEl(e.currentTarget)} aria-label={t('app.language')}>
+            <TranslateIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
         <Button variant="outlined" size="small" startIcon={<PaletteOutlinedIcon />} onClick={onOpenStyle} sx={{ whiteSpace: 'nowrap', flexShrink: 0 }}>
           <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' } }}>
-            模板与样式
+            {t('app.style')}
           </Box>
           <Box component="span" sx={{ display: { xs: 'inline', sm: 'none' } }}>
-            样式
+            {t('app.styleShort')}
           </Box>
         </Button>
         <Button
@@ -127,40 +138,56 @@ export default function TopBar({
           sx={{ whiteSpace: 'nowrap', flexShrink: 0 }}
           onClick={(e) => setExportEl(e.currentTarget)}
         >
-          导出
+          {t('app.export')}
         </Button>
-        <Tooltip title="更多">
+        <Tooltip title={t('app.more')}>
           <IconButton size="small" onClick={(e) => setMoreEl(e.currentTarget)}>
             <MoreVertIcon />
           </IconButton>
         </Tooltip>
       </Toolbar>
 
+      <Menu anchorEl={langEl} open={!!langEl} onClose={() => setLangEl(null)}>
+        {LOCALES.map((l) => (
+          <MenuItem
+            key={l.id}
+            selected={l.id === locale}
+            onClick={() => {
+              setLocale(l.id);
+              setLangEl(null);
+            }}
+          >
+            <ListItemIcon>{l.id === locale && <CheckIcon fontSize="small" />}</ListItemIcon>
+            <ListItemText primary={l.label} slotProps={{ primary: { lang: l.htmlLang } }} />
+          </MenuItem>
+        ))}
+      </Menu>
+
       <Menu anchorEl={exportEl} open={!!exportEl} onClose={() => setExportEl(null)}>
         <MenuItem onClick={() => run(async (n) => (await exporter()).exportPdf(n, data.style.padY, filename))}>
           <ListItemIcon>
             <PictureAsPdfOutlinedIcon fontSize="small" />
           </ListItemIcon>
-          <ListItemText primary="下载 PDF" secondary="与预览完全一致，自动分页" />
+          <ListItemText primary={t('export.pdf')} secondary={t('export.pdfHint')} />
         </MenuItem>
         <MenuItem onClick={() => run(async () => (await exporter()).printResume(data.style.padY))}>
           <ListItemIcon>
             <PrintOutlinedIcon fontSize="small" />
           </ListItemIcon>
-          <ListItemText primary="打印 / 矢量 PDF" secondary="浏览器打印，文字可选中，适合投递" />
+          <ListItemText primary={t('export.print')} secondary={t('export.printHint')} />
         </MenuItem>
         <Divider />
         <MenuItem onClick={() => run(async (n) => (await exporter()).exportImage(n, 'png', filename))}>
           <ListItemIcon>
             <ImageOutlinedIcon fontSize="small" />
           </ListItemIcon>
-          <ListItemText primary="下载 PNG 图片" secondary="长图，清晰无损" />
+          <ListItemText primary={t('export.png')} secondary={t('export.pngHint')} />
         </MenuItem>
         <MenuItem onClick={() => run(async (n) => (await exporter()).exportImage(n, 'jpeg', filename))}>
           <ListItemIcon>
             <ImageOutlinedIcon fontSize="small" />
           </ListItemIcon>
-          <ListItemText primary="下载 JPG 图片" secondary="体积更小" />
+          <ListItemText primary={t('export.jpg')} secondary={t('export.jpgHint')} />
         </MenuItem>
       </Menu>
 
@@ -174,7 +201,7 @@ export default function TopBar({
           <ListItemIcon>
             <FileDownloadOutlinedIcon fontSize="small" />
           </ListItemIcon>
-          <ListItemText primary="备份数据（JSON）" />
+          <ListItemText primary={t('data.backup')} />
         </MenuItem>
         <MenuItem
           onClick={() => {
@@ -185,7 +212,7 @@ export default function TopBar({
           <ListItemIcon>
             <FileUploadOutlinedIcon fontSize="small" />
           </ListItemIcon>
-          <ListItemText primary="导入数据（JSON）" />
+          <ListItemText primary={t('data.import')} />
         </MenuItem>
         <Divider />
         <MenuItem
@@ -197,7 +224,7 @@ export default function TopBar({
           <ListItemIcon>
             <RestartAltIcon fontSize="small" />
           </ListItemIcon>
-          <ListItemText primary="载入示例简历" />
+          <ListItemText primary={t('data.loadSample')} />
         </MenuItem>
         <MenuItem
           onClick={() => {
@@ -208,7 +235,7 @@ export default function TopBar({
           <ListItemIcon>
             <NoteAddOutlinedIcon fontSize="small" />
           </ListItemIcon>
-          <ListItemText primary="新建空白简历" />
+          <ListItemText primary={t('data.newEmpty')} />
         </MenuItem>
       </Menu>
       <input
@@ -223,24 +250,24 @@ export default function TopBar({
       />
 
       <Dialog open={!!confirm} onClose={() => setConfirm(null)}>
-        <DialogTitle>{confirm === 'sample' ? '载入示例简历？' : '新建空白简历？'}</DialogTitle>
+        <DialogTitle>{confirm === 'sample' ? t('data.confirmSample') : t('data.confirmEmpty')}</DialogTitle>
         <DialogContent>
           <Typography variant="body2" color="text.secondary">
-            当前内容会被覆盖。如需保留，请先通过「备份数据」导出 JSON。
+            {t('data.confirmBody')}
           </Typography>
         </DialogContent>
         <DialogActions>
           <Button color="inherit" onClick={() => setConfirm(null)}>
-            取消
+            {t('common.cancel')}
           </Button>
           <Button
             variant="contained"
             onClick={() => {
-              replace(confirm === 'sample' ? sampleData() : emptyData());
+              replace(confirm === 'sample' ? sampleData(locale) : emptyData(locale, t));
               setConfirm(null);
             }}
           >
-            确定
+            {t('common.confirm')}
           </Button>
         </DialogActions>
       </Dialog>
