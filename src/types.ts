@@ -105,8 +105,16 @@ export interface StyleSettings {
   showPageGuides: boolean;
 }
 
+/** 未经编辑的样例 / 空白简历：切换语言时可直接替换为对应语言版本 */
+export interface Pristine {
+  kind: 'sample' | 'empty';
+  locale: 'zh' | 'ja' | 'en';
+}
+
 export interface ResumeData {
   version: 1;
+  /** 用户做任何修改后会被清除 */
+  pristine?: Pristine;
   docTitle: string;
   basic: BasicInfo;
   sections: Section[];

@@ -7,6 +7,7 @@ import App from './App';
 import { FontsProvider } from './fonts/FontsProvider';
 import { loadBuiltinFont } from './fonts/registry';
 import { I18nProvider, useI18n } from './i18n';
+import { DocActionsProvider } from './components/DocActions';
 // 默认界面字体：思源黑体（SIL OFL 1.1），自托管；其他语言的界面字体按需加载
 import '@fontsource/noto-sans-sc/400.css';
 import '@fontsource/noto-sans-sc/700.css';
@@ -32,7 +33,9 @@ createRoot(document.getElementById('root')!).render(
       <LocalizedTheme>
         <FontsProvider>
           <ResumeProvider>
-            <App />
+            <DocActionsProvider>
+              <App />
+            </DocActionsProvider>
           </ResumeProvider>
         </FontsProvider>
       </LocalizedTheme>

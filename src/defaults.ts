@@ -145,6 +145,7 @@ export const createCustomSection = (t: TFn) =>
 
 export const emptyData = (locale: Locale, t: TFn): ResumeData => ({
   version: 1,
+  pristine: { kind: 'empty', locale },
   docTitle: t('app.defaultDocTitle'),
   basic: {
     name: '',

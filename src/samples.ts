@@ -241,4 +241,7 @@ function en(): ResumeData {
   };
 }
 
-export const sampleData = (locale: Locale): ResumeData => ({ zh, ja, en })[locale]();
+export const sampleData = (locale: Locale): ResumeData => ({
+  ...{ zh, ja, en }[locale](),
+  pristine: { kind: 'sample', locale },
+});
