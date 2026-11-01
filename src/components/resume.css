@@ -1,0 +1,226 @@
+/* 简历纸面样式：仅黑 / 灰，A4 宽 794px（96dpi） */
+.cv-root {
+  width: 794px;
+  min-height: 1123px;
+  box-sizing: border-box;
+  padding: var(--cv-pad-y) var(--cv-pad-x);
+  background: #fff;
+  color: #1a1a1a;
+  font-family: var(--cv-font);
+  font-size: var(--cv-fs);
+  line-height: var(--cv-lh);
+  -webkit-font-smoothing: antialiased;
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+}
+.cv-root *,
+.cv-root *::before,
+.cv-root *::after {
+  box-sizing: border-box;
+}
+.cv-root h1,
+.cv-root h2,
+.cv-root p,
+.cv-root ul,
+.cv-root ol {
+  margin: 0;
+}
+.cv-root a {
+  color: inherit;
+  text-decoration: none;
+}
+.cv-root strong {
+  font-weight: 700;
+  color: #000;
+}
+
+/* ---------- 抬头 ---------- */
+.cv-header {
+  position: relative;
+}
+.cv-header-center {
+  text-align: center;
+}
+.cv-header-center.has-avatar .cv-header-main {
+  padding: 0 110px;
+}
+.cv-header-left {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+}
+.cv-header-left .cv-header-main {
+  flex: 1;
+}
+.cv-avatar {
+  width: 84px;
+  height: 104px;
+  object-fit: cover;
+  border-radius: 4px;
+  border: 1px solid #d0d0d0;
+  display: block;
+}
+.cv-header-center .cv-avatar {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+.cv-name-row {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  margin-bottom: 8px;
+}
+.cv-header-center .cv-name-row {
+  justify-content: center;
+}
+.cv-name {
+  font-size: calc(var(--cv-fs) * 2);
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: 0.04em;
+  color: #000;
+}
+.cv-jobtitle {
+  font-size: calc(var(--cv-fs) * 1.3);
+  color: #3a3a3a;
+}
+.cv-contacts {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 0;
+  color: #3a3a3a;
+}
+.cv-header-center .cv-contacts {
+  justify-content: center;
+}
+.cv-contacts li + li::before {
+  content: '|';
+  color: #b0b0b0;
+  margin: 0 10px;
+}
+.cv-link-label {
+  color: #5f5f5f;
+}
+
+/* ---------- 模块 ---------- */
+.cv-section {
+  margin-top: var(--cv-gap);
+}
+.cv-section-title {
+  font-size: calc(var(--cv-fs) * 1.25);
+  font-weight: 700;
+  color: #000;
+  line-height: 1.35;
+  margin-bottom: calc(var(--cv-gap) * 0.35) !important;
+  break-after: avoid;
+}
+.h-bar .cv-section-title {
+  border-left: 4px solid #1a1a1a;
+  padding: 1px 0 1px 10px;
+}
+.h-underline .cv-section-title {
+  border-bottom: 1.5px solid #1a1a1a;
+  padding-bottom: 4px;
+}
+.h-fill .cv-section-title {
+  background: #ececec;
+  padding: 3px 10px;
+}
+.h-plain .cv-section-title {
+  letter-spacing: 0.12em;
+}
+
+.cv-item + .cv-item {
+  margin-top: calc(var(--cv-gap) * 0.55);
+}
+.cv-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 28px;
+  row-gap: calc(var(--cv-gap) * 0.55);
+}
+.cv-grid-2 > .cv-item + .cv-item {
+  margin-top: 0;
+}
+.cv-item-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  margin-bottom: 2px;
+  break-after: avoid;
+}
+.cv-item-title,
+.cv-skill-name {
+  font-weight: 700;
+  font-size: calc(var(--cv-fs) * 1.07);
+  color: #000;
+}
+.cv-item-meta {
+  margin-left: 14px;
+  color: #5f5f5f;
+}
+.cv-item-date {
+  color: #3a3a3a;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.cv-rich p {
+  margin: 0.15em 0;
+}
+.cv-rich ul,
+.cv-rich ol {
+  padding-left: 1.4em;
+  margin: 0.15em 0;
+}
+.cv-rich li {
+  margin: 0.1em 0;
+}
+.cv-rich ul li::marker {
+  color: #5f5f5f;
+}
+.cv-rich p,
+.cv-rich li,
+.cv-custom-block {
+  break-inside: avoid;
+}
+
+.cv-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.cv-tag {
+  border: 1px solid #8a8a8a;
+  border-radius: 3px;
+  padding: 1px 10px;
+  color: #1a1a1a;
+}
+
+/* ---------- 自定义模块 ---------- */
+.cv-pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.cv-custom-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  text-align: left;
+}
+.cv-custom-right {
+  white-space: nowrap;
+}
+.cv-divider {
+  border: 0;
+  border-top: 1px solid;
+  margin: 0;
+}

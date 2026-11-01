@@ -1,0 +1,38 @@
+html,
+body,
+#root {
+  height: 100%;
+}
+body {
+  overflow: hidden;
+}
+
+#print-root {
+  display: none;
+}
+
+@media print {
+  html,
+  body {
+    height: auto;
+    overflow: visible;
+    background: #fff;
+  }
+  #root,
+  .MuiPopover-root,
+  .MuiDrawer-root,
+  .MuiSnackbar-root,
+  .MuiFab-root {
+    display: none !important;
+  }
+  #print-root {
+    display: block;
+  }
+  /* 上下页边距交给 @page，保证每一页都有留白 */
+  #print-root .cv-root {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    min-height: 0 !important;
+    width: 100% !important;
+  }
+}
